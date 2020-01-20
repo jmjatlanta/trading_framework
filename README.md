@@ -11,6 +11,8 @@ This README will probably later be moved to make room for real documentation (de
 
 I have built a number of trading systems, and would like to standardize some of the mundane tasks so that the concentration can be on the execution of the strategy instead of anciliary activities. In addition, those anciliary activities can be tested, audited and improved for the benefit of all past, current, and future strategies.
 
+Why no discussion of backtesting? Because it is not part of the system yet. Once a few itterations are under my belt, I may provide a way to do this. It may be as simple as changing the data provider and turning off the order management piece. I am just not through noodling that around in my head.
+
 ### The Situation
 
 There are components that most trading systems have, or at least should have. Some existing frameworks provide these for "free" as part of the platform. I am thinking of platforms like TradeStation and MT4. Making a trade, adding money management rules, etc. are very easy on such platforms. But leaving those platforms (and sometimes simply switching brokers) can be difficult, as sections (or even the whole thing) need adjusting or rewritten.
@@ -26,3 +28,7 @@ I will attempt to build (or at least itterate towards) clean interfaces that pro
 ### The Tactics
 
 Modularize the underlying systems and concentrate on building the components that work well themselves, and interface well with others.
+
+##### Where to go from here
+
+Check out the [technical implementation documentation](TECHNICAL_IMPLEMENTATION.md).

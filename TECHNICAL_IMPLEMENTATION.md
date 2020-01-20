@@ -2,6 +2,8 @@
 
 Here, I will attempt to document my rationale for certain decisions. As the project is very young (premature?), these of course could change drasticly.
 
+For a more general discussion of the project, [click here](README.md).
+
 ## Components vs Microservices
 
 There is a debate in my own head as to wheter certain components would be better served as microservices or components embedded in an application.
@@ -45,6 +47,8 @@ This will provide for keeping up with account balances, and up-to-the-second (an
 #### Strategy
 
 This is where the daily work is done. Initially this will probably be in C++, but I would like to make this where Python scripts are provided access to the rest of the system components.
+
+This component may be split into entry strategies and exit strategies, with an over-encompasing strategy on top. I am still hammering out the details.
 
 ```
 include
