@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+build/*
+vendor/ib_client/*
+.vscode/*
