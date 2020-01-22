@@ -12,6 +12,7 @@ class Configuration
    std::string GetIBHost();
    unsigned int GetIBPort();
    unsigned int GetIBHistoricalConnectionId();
+   unsigned int GetIBStreamingConnectionId();
    private:
    Configuration();
 };

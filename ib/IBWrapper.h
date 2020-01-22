@@ -23,8 +23,18 @@
 
 #include <market_data/Contract.hpp>
 #include <market_data/BarSettings.hpp>
+#include <market_data/streaming/StreamingService.hpp>
 
 namespace ib {
+
+class IBException : public std::exception
+{
+   private:
+   std::string msg;
+   public:
+   IBException(std::string msg) : msg(msg) {};
+   virtual std::string what() { return msg; }
+};
 
 enum ConnectionStatus {
    UNKNOWN, // class probably newly constructed
@@ -40,6 +50,17 @@ std::string BarTimeSpanToIBString(tf::BarTimeSpan in);
 std::string DurationToIBDuration(std::chrono::system_clock::duration in);
 
 std::string TimeToIBTime(std::chrono::system_clock::time_point tp);
+
+market_data::TickType IBTickTypeToMDTickType(TickType ib_tt);
+
+class TickMessage
+{
+   public:
+   TickType tickType;
+   double d;
+   long l;
+   std::string msg;
+};
 
 class IBWrapper: public EWrapper {
 public:
@@ -94,6 +115,11 @@ public:
       std::vector<Bar> retVal = historicalBars[reqId];
       historicalBars.erase(reqId);
       return retVal;
+   }
+
+   void SubscribeToTickData(const Contract& contract, std::function<void(TickMessage)> func)
+   {
+
    }
 
 	bool requestContractDetails(int requestId, const Contract& contract);

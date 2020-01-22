@@ -7,15 +7,6 @@
 namespace ib
 {
 
-class IBException : public std::exception
-{
-   private:
-   std::string msg;
-   public:
-   IBException(std::string msg) : msg(msg) {};
-   virtual std::string what() { return msg; }
-};
-
 IBHistoricalService::IBHistoricalService()
 {
    // grab connection information from configuration

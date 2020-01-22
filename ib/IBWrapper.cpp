@@ -63,6 +63,21 @@ std::string TimeToIBTime(std::chrono::system_clock::time_point tp)
    return ss.str();
 }   
 
+market_data::TickType IBTickTypeToMDTickType(TickType ib_tt)
+{
+   switch(ib_tt)
+   {
+      case TickType::BID:
+         return market_data::TickType::BID;
+      case TickType::ASK:
+         return market_data::TickType::ASK;
+      case TickType::LAST:
+         return market_data::TickType::LAST;
+      default:
+         return market_data::TickType::TEXT;
+   }
+}
+
 /**
  * Constructor. This class sends and responds to messages from IB
  */
