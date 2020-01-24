@@ -26,8 +26,7 @@ IBStreamingService::IBStreamingService()
       throw IBException("Unable to connect");
 }
 
-template<class T>
-void IBStreamingService::GetTimeAndSales(tf::Contract contract, std::function<void(market_data::TickMessage<T>)> func)
+void IBStreamingService::GetTimeAndSales(tf::Contract contract, std::function<void(market_data::TickMessage)> func)
 {
    // convert TickMessage to market_data::tick_message
    auto conv_func = [&func](const ib::TickMessage& ib_msg) {
@@ -37,14 +36,10 @@ void IBStreamingService::GetTimeAndSales(tf::Contract contract, std::function<vo
          case (market_data::TickType::BID):
          case (market_data::TickType::ASK):
          case (market_data::TickType::LAST):
-            func(market_data::TickMessage<double>(md_type, ib_msg.d));
-            break;
          case market_data::TickType::VOLUME:
-            func(market_data::TickMessage<long>(md_type, ib_msg.l));
-            break;
          case market_data::TickType::TEXT:
-            func(market_data::TickMessage<std::string>(md_type, ib_msg.msg));
-         break;
+            func(market_data::TickMessage(md_type, ib_msg.price, ib_msg.volume, ib_msg.message));
+            break;
       }
    };
    Contract ib_contract;

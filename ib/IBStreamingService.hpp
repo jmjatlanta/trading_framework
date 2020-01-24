@@ -14,8 +14,7 @@ class IBStreamingService : public market_data::StreamingService<IBStreamingServi
 {
    public:
    IBStreamingService();
-   template<class T>
-   void GetTimeAndSales(tf::Contract contract, std::function<void(market_data::TickMessage<T>)>);
+   void GetTimeAndSales(tf::Contract contract, std::function<void(market_data::TickMessage)>);
    private:
    std::shared_ptr<ib::IBWrapper> ibWrapper = nullptr;
    // methods that talk to IB

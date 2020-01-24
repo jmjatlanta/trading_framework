@@ -78,6 +78,9 @@ BOOST_AUTO_TEST_CASE( streaming_test )
          case (market_data::TickType::TEXT):
             std::cout << "Text\n";
             break;
+         case (market_data::TickType::VOLUME):
+            std::cout << "Volume\n";
+            break;
       }
       atLeastOne = true;
    };

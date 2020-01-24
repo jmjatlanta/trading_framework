@@ -57,9 +57,9 @@ class TickMessage
 {
    public:
    TickType tickType;
-   double d;
-   long l;
-   std::string msg;
+   double price;
+   unsigned long volume;
+   std::string message;
 };
 
 class IBWrapper: public EWrapper {
