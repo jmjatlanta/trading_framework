@@ -4,11 +4,12 @@
 #include <ib/IBWrapper.h>
 #include <ib/IBHistoricalService.hpp>
 #include <ib/IBStreamingService.hpp>
+#include <ib/IBAccountService.hpp>
 #include <market_data/historical/HistoricalService.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 #include <market_data/BarSettings.hpp>
 #include <market_data/Contract.hpp>
-
+#include <risk_management/Order.hpp>
 
 class MockHistoricalService : public HistoricalService<MockHistoricalService>
 {
@@ -89,6 +90,32 @@ BOOST_AUTO_TEST_CASE( streaming_test )
    ib.GetTimeAndSales(msft, func );
    std::this_thread::sleep_for( std::chrono::seconds(3) );
    BOOST_TEST( atLeastOne == true );
+}
+
+BOOST_AUTO_TEST_CASE( book_test )
+{
+   /**
+    * Note: This requires subscription to L2
+    */
+   tf::Contract codx("T");
+   codx.exchange = "ARCA";
+   bool atLeastOne = false;
+
+   auto func = [&atLeastOne](const market_data::BookMessage msg) {
+      atLeastOne = true;
+   };
+
+   IBStreamingService ib;
+   ib.GetBookData(codx, func);
+   std::this_thread::sleep_for( std::chrono::seconds(3) );
+   BOOST_TEST( atLeastOne == true );
+}
+
+BOOST_AUTO_TEST_CASE( account_test )
+{
+   ib::IBAccountService acctSvc;
+   std::vector<risk_management::Order> orders = acctSvc.GetOpenOrders(1);
+   
 }
 
 BOOST_AUTO_TEST_SUITE_END()

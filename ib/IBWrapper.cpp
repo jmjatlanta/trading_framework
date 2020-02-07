@@ -10,6 +10,7 @@
 #include <string>
 #include "IBWrapper.h"
 #include "ib_client/ScannerSubscription.h"
+#include <market_data/Contract.hpp>
 #include "util/SysLogger.h"
 
 namespace ib {
@@ -76,6 +77,18 @@ market_data::TickType IBTickTypeToMDTickType(TickType ib_tt)
       default:
          return market_data::TickType::TEXT;
    }
+}
+
+Contract ContractToIBContract(tf::Contract in)
+{
+   Contract out;
+   out.currency = in.currency;
+   out.secType = SecurityTypeToIBString(in.securityType);
+   out.localSymbol = in.ticker;
+   out.symbol = in.ticker;
+   if (!in.exchange.empty())
+      out.exchange = in.exchange;
+   return out;
 }
 
 /**
@@ -262,10 +275,26 @@ void IBWrapper::contractDetails(int reqId, const ContractDetails& contractDetail
 
 
 void IBWrapper::tickPrice( TickerId tickerId, TickType field, double price, const TickAttrib& attribs) {
-	//std::cout << "tickPrice Ticker ID: " << tickerId << " Field: " << field << " Price: " << price << "<br/>" << std::endl;
+   // create TickMessage
+   ib::TickMessage tm;
+   tm.tickType = field;
+   tm.price = price;
+   // send it to all functions that requested it
+   std::vector<std::function<void(TickMessage)>>& vec = requestTickFunc[tickerId];
+   std::for_each(vec.begin(), vec.end(), [&tm](std::function<void(TickMessage)> func) {
+      func(tm);
+   });
 }
 void IBWrapper::tickSize( TickerId tickerId, TickType field, int size) {
-	//std::cout << "tickSize Ticker ID: " << tickerId << " Field: " << field << " Size: " << size << "<br/>" << std::endl;
+   // create TickMessage
+   ib::TickMessage tm;
+   tm.tickType = field;
+   tm.volume = size;
+   // send it to all functions that requested it
+   std::vector<std::function<void(TickMessage)>>& vec = requestTickFunc[tickerId];
+   std::for_each(vec.begin(), vec.end(), [&tm](std::function<void(TickMessage)> func) {
+      func(tm);
+   });
 }
 void IBWrapper::tickOptionComputation( TickerId tickerId, TickType tickType, double impliedVol, double delta,
 	   double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {}
@@ -278,7 +307,15 @@ void IBWrapper::tickGeneric(TickerId tickerId, TickType tickType, double value) 
 	}
 }
 void IBWrapper::tickString(TickerId tickerId, TickType tickType, const std::string& value) {
-	//std::cout << "tickString Ticker ID: " << tickerId << " Type: " << tickType << " Value: " << value << "<br/>" << std::endl;
+   // create TickMessage
+   ib::TickMessage tm;
+   tm.tickType = tickType;
+   tm.message = value;
+   // send it to all functions that requested it
+   std::vector<std::function<void(TickMessage)>>& vec = requestTickFunc[tickerId];
+   std::for_each(vec.begin(), vec.end(), [&tm](std::function<void(TickMessage)> func) {
+      func(tm);
+   });
 }
 void IBWrapper::tickEFP(TickerId tickerId, TickType tickType, double basisPoints, const std::string& formattedBasisPoints,
 	   double totalDividends, int holdDays, const std::string& futureLastTradeDate, double dividendImpact, double dividendsToLastTradeDate) {}
@@ -319,10 +356,36 @@ void IBWrapper::error(const int id, const int errorCode, const std::string& erro
 		completedRequests.insert(id);
 	}
 }
+/***
+ * updates L1 data
+ * @param id ticker id
+ * @param position position
+ * @param operation add/remove
+ * @param side bid/ask
+ * @param price price
+ * @param size size
+ */
 void IBWrapper::updateMktDepth(TickerId id, int position, int operation, int side,
-   double price, int size) {}
+   double price, int size) 
+{
+      //TODO: call correct callback method
+}
+/***
+ * updates L2 data
+ * @param id ticker id
+ * @param position position
+ * @param marketMaker the market maker
+ * @param operation add/remove
+ * @param side bid/ask
+ * @param price price
+ * @param size size
+ * @param isSmartDepth is combined
+ */   
 void IBWrapper::updateMktDepthL2(TickerId id, int position, const std::string& marketMaker, int operation,
-   int side, double price, int size, bool isSmartDepth) {}
+   int side, double price, int size, bool isSmartDepth) 
+{
+
+}
 
 /***
  * Called when IB sends out a bulletin

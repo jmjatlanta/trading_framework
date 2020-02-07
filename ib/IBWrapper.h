@@ -53,6 +53,8 @@ std::string TimeToIBTime(std::chrono::system_clock::time_point tp);
 
 market_data::TickType IBTickTypeToMDTickType(TickType ib_tt);
 
+Contract ContractToIBContract(tf::Contract in);
+
 class TickMessage
 {
    public:
@@ -60,6 +62,11 @@ class TickMessage
    double price;
    unsigned long volume;
    std::string message;
+};
+
+class BookMessage
+{
+   public:
 };
 
 class IBWrapper: public EWrapper {
@@ -82,6 +89,8 @@ private:
    std::map<int, std::vector<Bar>> historicalBars;
 	 // A list of completed requests
 	std::set<int> completedRequests;
+   std::map<int, std::vector<std::function<void(TickMessage)>>> requestTickFunc;
+   std::map<int, std::vector<std::function<void(BookMessage)>>> requestBookFunc;
 protected:
 	std::shared_ptr<std::thread> listener = nullptr;
 	volatile bool shutting_down;
@@ -105,7 +114,7 @@ public:
    int reqHistoricalData(Contract contract, std::string endDateTime, std::string durationString,
          std::string barSizeSetting, std::string whatToShow, int useRTH, int formatDate, bool keepUpToDate, TagValueListSPtr chartOptions)
    {
-      TickerId tickerId = nextValidOrderId++;
+      TickerId tickerId = getNextOrderId();
       m_pClient->reqHistoricalData(tickerId, contract, endDateTime, durationString, barSizeSetting, whatToShow, useRTH, formatDate, keepUpToDate, chartOptions);
       return tickerId;
    }
@@ -117,9 +126,25 @@ public:
       return retVal;
    }
 
-   void SubscribeToTickData(const Contract& contract, std::function<void(TickMessage)> func)
+   TickerId getNextOrderId()
    {
+      return nextValidOrderId++;
+   }
 
+   TickerId SubscribeToTickData(const Contract& contract, std::function<void(TickMessage)> func)
+   {
+      int reqId = getNextOrderId();
+      // put the function in the collection
+      requestTickFunc[reqId].push_back(func);
+      m_pClient->reqMktData(reqId, contract, "225", false, false, TagValueListSPtr());
+      return reqId;
+   }
+
+   void SubscribeToBookData(const Contract& contract, std::function<void(BookMessage)> func)
+   {
+      int reqId = getNextOrderId();
+      requestBookFunc[reqId].push_back(func);
+      m_pClient->reqMktDepth(reqId, contract, 10, false, TagValueListSPtr());
    }
 
 	bool requestContractDetails(int requestId, const Contract& contract);

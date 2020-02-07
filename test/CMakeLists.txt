@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-find_package(Boost 1.70 COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost 1.65 COMPONENTS unit_test_framework REQUIRED)
 
 project(tests)
 

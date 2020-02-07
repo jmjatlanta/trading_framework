@@ -10,9 +10,10 @@ class Configuration
    public:
    static Configuration* GetInstance();
    std::string GetIBHost();
-   unsigned int GetIBPort();
-   unsigned int GetIBHistoricalConnectionId();
-   unsigned int GetIBStreamingConnectionId();
+   uint16_t GetIBPort();
+   uint16_t GetIBHistoricalConnectionId();
+   uint16_t GetIBStreamingConnectionId();
+   uint16_t GetIBAccountConnectionId();
    private:
    Configuration();
 };

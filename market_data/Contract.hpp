@@ -22,6 +22,7 @@ class Contract
          {}
    std::string ticker;
    std::string currency;
+   std::string exchange;
    SecurityType securityType;
 };
 
