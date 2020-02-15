@@ -60,7 +60,7 @@ std::vector<OHLCBar> IBHistoricalService::requestHistoricalData(tf::Contract con
    std::vector<Bar> bars = ibWrapper->GetHistoricalData(reqId);
    std::vector<OHLCBar> retVal;
    std::for_each(bars.begin(), bars.end(), [&retVal](Bar b){
-      OHLCBar newBar(b.open, b.high, b.low, b.close, b.volume);
+      OHLCBar newBar(b.time, b.open, b.high, b.low, b.close, b.volume);
       retVal.push_back( newBar );
    });
    return retVal;

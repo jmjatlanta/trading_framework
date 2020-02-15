@@ -35,9 +35,11 @@ std::string BarTimeSpanToIBString(tf::BarTimeSpan in)
 {
    switch (in)
    {
-      case (tf::BarTimeSpan::FIVE_MINUTES):
+      case tf::BarTimeSpan::ONE_MINUTE:
+         return "1 min";
+      case tf::BarTimeSpan::FIVE_MINUTES:
          return "5 mins";
-      case (tf::BarTimeSpan::ONE_DAY):
+      case tf::BarTimeSpan::ONE_DAY:
          return "1 day";
    }
    return "";
@@ -51,6 +53,8 @@ std::string DurationToIBDuration(std::chrono::system_clock::duration in)
       auto secs = std::chrono::duration_cast<std::chrono::seconds>(in).count();
       return std::to_string(secs) + " S";
    }
+   if (hrs / 24 > 365)
+      return std::to_string( hrs / 24 / 365) + " Y";
    return std::to_string(hrs / 24) + " D";
 }
 

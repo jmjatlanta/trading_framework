@@ -1,6 +1,7 @@
-#define BOOST_TEST_MODULE trading_framework
-#include <boost/test/included/unit_test.hpp>
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
 
+#include <iostream>
 #include <ib/IBWrapper.h>
 #include <ib/IBHistoricalService.hpp>
 #include <ib/IBStreamingService.hpp>
