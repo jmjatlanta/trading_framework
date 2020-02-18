@@ -5,9 +5,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(MyTradingSystem)
 
+add_subdirectory(quandl-cpp)
 add_subdirectory(ib)
 add_subdirectory(risk_management)
 add_subdirectory(test)
 add_subdirectory(store)
-
+set(JSON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/quandl-cpp/modules/json/src)
+include_directories(${QUANDLCPP_INCLUDE_DIR} ${CPR_INCLUDE_DIRS} ${JSON_INCLUDE_DIRS})
 add_executable(MyTradingSystem main.cpp)
+target_link_libraries(MyTradingSystem ${QUANDLCPP_LIB} ${CPR_LIBRARIES})
