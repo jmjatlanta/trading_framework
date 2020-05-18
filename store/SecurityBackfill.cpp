@@ -49,34 +49,19 @@ int main(int argc, char** argv)
 {
    if (argc < 3)
    {
-      std::cerr << "Syntax: " << argv[0] << " [SYMBOL] [D|5|1]\n";
+      std::cerr << "Syntax: " << argv[0] << " [SYMBOL] [nD|nH|nM|nS]\n";
       exit(1);
    }
-   ib::IBHistoricalService ibHist;
+   ib::IBHistoricalService ibHist(IBConfiguration("127.0.0.1", 4007, 1));
    std::string ticker = argv[1];
    std::string barSize = argv[2];
    tf::Contract contract(ticker);
-   tf::BarSettings span;
-   if (barSize != "D" && barSize != "5" && barSize != "1")
+   tf::BarSettings span = tf::StringToDefaultBarSettings(barSize);
+   if (span.barTimeSpan == tf::BarTimeSpan::INVALID)
    {
-      std::cerr << "Syntax: " << argv[0] << " [SYMBOL] [D|5|1]\n";
+      std::cerr << "Syntax: " << argv[0] << " [SYMBOL] [nD|nH|nM|nS]\n";
       exit(1);
    }   
-   if (barSize == "D")
-   {
-      span.barTimeSpan = tf::BarTimeSpan::ONE_DAY; 
-      span.duration = std::chrono::hours(3*24*365); // 253 trading days per year avg
-   }
-   if (barSize == "5")
-   {
-      span.barTimeSpan = tf::BarTimeSpan::FIVE_MINUTES;
-      span.duration = std::chrono::hours(24*253); // 1 trading year
-   }
-   if (barSize == "1")
-   {
-      span.barTimeSpan = tf::BarTimeSpan::ONE_MINUTE;
-      span.duration = std::chrono::hours(24*126); // 6 trading months
- }
    auto fut = ibHist.GetBars(contract, span);   
    auto bars = fut.get();
    SecurityFile file(get_dir(contract, span.barTimeSpan));

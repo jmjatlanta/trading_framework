@@ -7,6 +7,7 @@ project(MyTradingSystem)
 
 add_subdirectory(quandl-cpp)
 add_subdirectory(ib)
+add_subdirectory(market_data)
 add_subdirectory(risk_management)
 add_subdirectory(test)
 add_subdirectory(store)

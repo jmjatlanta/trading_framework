@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <algorithm>
 
 namespace tf
 {
@@ -17,8 +18,17 @@ enum BarTimeSpan {
    FIFTEEN_MINUTES, 
    THIRTY_MINUTES, 
    ONE_HOUR, 
-   ONE_DAY 
+   ONE_DAY,
+   INVALID 
 };
+
+/****
+ * @brief Convert common strings to their equivalent BarTimeSpan
+ * Example: nD= number of Days, nH = number of Hours, nM = number of minutes, nS = number of seconds
+ * @param in the string
+ * @returns A BarTimeSpan
+ */
+BarTimeSpan StringToBarTimeSpan(const std::string& in);
 
 class BarSettings
 {
@@ -31,5 +41,7 @@ class BarSettings
    std::chrono::system_clock::duration duration;
    BarTimeSpan barTimeSpan;
 };
+
+BarSettings StringToDefaultBarSettings(const std::string& in);
 
 } // namespace tf

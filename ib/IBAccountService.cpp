@@ -4,11 +4,9 @@
 namespace ib
 {
 
-IBAccountService::IBAccountService()
+IBAccountService::IBAccountService(const IBConfiguration& config)
 {
-   // grab connection information from configuration
-   util::Configuration* conf = util::Configuration::GetInstance();
-   ibWrapper = std::make_shared<IBWrapper>( conf->GetIBHost(), conf->GetIBPort(), conf->GetIBAccountConnectionId() );
+   ibWrapper = std::make_shared<IBWrapper>( config.ip, config.port, config.client_id );
    ConnectionStatus currStatus = ibWrapper->GetConnectionStatus();
    int counter = 0;
    while (currStatus != ConnectionStatus::CONNECTED && counter < 30)

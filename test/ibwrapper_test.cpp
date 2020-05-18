@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
    auto mock_bars = retVal.get();
    BOOST_TEST( mock_bars.size() == 0 );
 
-   IBHistoricalService svc2;
+   IBHistoricalService svc2( IBConfiguration("127.0.0.1", 4007, 1));
    auto retVal2 = svc2.GetBars(msft, barSettings);
    auto bars = retVal2.get();
    BOOST_TEST( bars.size() > 0);
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE( streaming_test )
       atLeastOne = true;
    };
 
-   IBStreamingService ib;
+   IBStreamingService ib(IBConfiguration("127.0.0.1", 4007, 1));
    ib.GetTimeAndSales(msft, func );
    std::this_thread::sleep_for( std::chrono::seconds(3) );
    BOOST_TEST( atLeastOne == true );
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE( book_test )
       atLeastOne = true;
    };
 
-   IBStreamingService ib;
+   IBStreamingService ib( IBConfiguration("127.0.0.1", 4007, 1));
    ib.GetBookData(codx, func);
    std::this_thread::sleep_for( std::chrono::seconds(3) );
    BOOST_TEST( atLeastOne == true );
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE( book_test )
 
 BOOST_AUTO_TEST_CASE( account_test )
 {
-   ib::IBAccountService acctSvc;
+   ib::IBAccountService acctSvc( IBConfiguration("127.0.0.1", 4007, 1));
    std::vector<risk_management::Order> orders = acctSvc.GetOpenOrders(1);
    
 }

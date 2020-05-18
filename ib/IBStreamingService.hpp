@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <ib/IBWrapper.h>
+#include <ib/IBConfiguration.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 #include <market_data/Contract.hpp>
 
@@ -13,7 +14,7 @@ namespace ib
 class IBStreamingService : public market_data::StreamingService<IBStreamingService>
 {
    public:
-   IBStreamingService();
+   IBStreamingService(const IBConfiguration& config);
    void GetTimeAndSales(tf::Contract contract, std::function<void(market_data::TickMessage)> func);
    void GetBookData(tf::Contract contract, std::function<void(market_data::BookMessage)> func);
    private:

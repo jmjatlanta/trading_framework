@@ -72,7 +72,7 @@ class Strategy : public MarketMonitor
 class StrategyRunner
 {
    public:
-   StrategyRunner();
+   StrategyRunner(const IBConfiguration& accountConfig, const IBConfiguration& historicalConfig, const IBConfiguration& streamingConfig);
    void AddStrategy(std::shared_ptr<Strategy> s);
    private:
    ib::IBAccountService accountService;

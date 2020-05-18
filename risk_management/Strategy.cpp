@@ -12,7 +12,8 @@ void Strategy::SubscribeToEvent(strategy::EventType eventType, tf::Contract cont
 /**
  * This should connect to external systems and manage everything related to a strategy
  */
-StrategyRunner::StrategyRunner()
+StrategyRunner::StrategyRunner(const IBConfiguration& accountConfig, const IBConfiguration& historicalConfig, const IBConfiguration& streamingConfig)
+      : accountService( accountConfig ), historicalService(historicalConfig), streamingService(streamingConfig)
 {
 }
    

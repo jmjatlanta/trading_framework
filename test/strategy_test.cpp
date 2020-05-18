@@ -134,14 +134,16 @@ BOOST_AUTO_TEST_SUITE ( strategy )
 BOOST_AUTO_TEST_CASE ( opening_gap )
 {
    // this is the "main" system
-   strategy::StrategyRunner strategyRunner;
+   IBConfiguration config("127.0.0.1", 4007, 1);
+   strategy::StrategyRunner strategyRunner(config, config, config);
    // run this strategy
    strategyRunner.AddStrategy( std::make_shared<Scalp1>(tf::Contract("MSFT")));
 }
 
 BOOST_AUTO_TEST_CASE ( data_capture )
 {
-   strategy::StrategyRunner strategyRunner;
+   IBConfiguration config("127.0.0.1", 4007, 1);
+   strategy::StrategyRunner strategyRunner(config, config, config);
    strategyRunner.AddStrategy( std::make_shared<DataCapture>(tf::Contract("AAPL")));
    //strategyRunner.AddStrategy(DataCapture(tf::Index("SPX")));
 }

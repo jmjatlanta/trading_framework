@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <ib/IBWrapper.h>
+#include <ib/IBConfiguration.hpp>
 #include <market_data/historical/HistoricalService.hpp>
 #include <market_data/Contract.hpp>
 
@@ -13,7 +14,7 @@ namespace ib
 class IBHistoricalService : public HistoricalService<IBHistoricalService>
 {
    public:
-   IBHistoricalService();
+   IBHistoricalService(const IBConfiguration& config);
    std::future<std::vector<OHLCBar>> GetBars(tf::Contract contract, tf::BarSettings span);
    private:
    std::shared_ptr<ib::IBWrapper> ibWrapper = nullptr;

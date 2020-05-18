@@ -1,17 +1,14 @@
 #include <algorithm>
 #include <ib/IBStreamingService.hpp>
-#include <util/Configuration.hpp>
 #include <market_data/BarSettings.hpp>
 
 
 namespace ib
 {
 
-IBStreamingService::IBStreamingService()
+IBStreamingService::IBStreamingService(const IBConfiguration& config)
 {
-   // grab connection information from configuration
-   util::Configuration* conf = util::Configuration::GetInstance();
-   ibWrapper = std::make_shared<IBWrapper>( conf->GetIBHost(), conf->GetIBPort(), conf->GetIBStreamingConnectionId() );
+   ibWrapper = std::make_shared<IBWrapper>( config.ip, config.port, config.client_id );
    ConnectionStatus currStatus = ibWrapper->GetConnectionStatus();
    int counter = 0;
    while (currStatus != ConnectionStatus::CONNECTED && counter < 30)
