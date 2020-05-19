@@ -17,6 +17,7 @@ namespace strategy
 
 /***
  * @brief keeps information about the market, exchange, and a security
+ * This should probably be moved to the historical service
  */
 class MarketMonitor
 {
@@ -48,12 +49,12 @@ class Strategy : public MarketMonitor
    virtual strategy::EvaluationResult OnOrderCanceled(strategy::Event e) = 0;
    void SubscribeToEvent(EventType eventType, tf::Contract contract);
    std::vector<std::pair<EventType, tf::Contract>> eventContractPairs;
-   protected:
-   //std::shared_ptr<StrategyRunner<Runner>> strategyRunner;
 };
 
 /***
  * @brief This runs strategies.
+ * It was originally designed to handle multiple strategies. Now I don't think that is needed. So far,
+ * each strategy is its own executable, with the accounting service being a separate network service
  */
 template<class Derived, class StreamingSerivce, class AccountingService>
 class StrategyRunner
@@ -93,7 +94,5 @@ class StrategyRunner
    AccountingService accountingService;
    StreamingSerivce streamingService;
 };
-
-
 
 } // namespace strategy

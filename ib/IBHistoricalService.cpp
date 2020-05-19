@@ -23,13 +23,13 @@ IBHistoricalService::IBHistoricalService(const IBConfiguration& config)
       throw IBException("Unable to connect");
 }
 
-std::future<std::vector<OHLCBar>> IBHistoricalService::GetBars(tf::Contract contract, tf::BarSettings span)
+std::future<std::vector<market_data::OHLCBar>> IBHistoricalService::GetBars(tf::Contract contract, tf::BarSettings span)
 {
    // use IB to get historical information
    return std::async(&ib::IBHistoricalService::requestHistoricalData, this, contract, span);
 }
 
-std::vector<OHLCBar> IBHistoricalService::requestHistoricalData(tf::Contract contract, tf::BarSettings span)
+std::vector<market_data::OHLCBar> IBHistoricalService::requestHistoricalData(tf::Contract contract, tf::BarSettings span)
 {
    // NOTE: this will probably be running in a separate thread
    // todo: avoid wait locks by signalling
@@ -55,9 +55,9 @@ std::vector<OHLCBar> IBHistoricalService::requestHistoricalData(tf::Contract con
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
    }
    std::vector<Bar> bars = ibWrapper->GetHistoricalData(reqId);
-   std::vector<OHLCBar> retVal;
+   std::vector<market_data::OHLCBar> retVal;
    std::for_each(bars.begin(), bars.end(), [&retVal](Bar b){
-      OHLCBar newBar(b.time, b.open, b.high, b.low, b.close, b.volume);
+      market_data::OHLCBar newBar(b.time, b.open, b.high, b.low, b.close, b.volume);
       retVal.push_back( newBar );
    });
    return retVal;

@@ -65,7 +65,7 @@ int main(int argc, char** argv)
    auto fut = ibHist.GetBars(contract, span);   
    auto bars = fut.get();
    SecurityFile file(get_dir(contract, span.barTimeSpan));
-   std::for_each(bars.begin(), bars.end(), [&file](const OHLCBar& in){
+   std::for_each(bars.begin(), bars.end(), [&file](const market_data::OHLCBar& in){
       file.AddBar(in);
    });
 

@@ -11,11 +11,11 @@
 namespace ib
 {
 
-class IBHistoricalService : public HistoricalService<IBHistoricalService>
+class IBHistoricalService : public market_data::HistoricalService<IBHistoricalService>
 {
    public:
    IBHistoricalService(const IBConfiguration& config);
-   std::future<std::vector<OHLCBar>> GetBars(tf::Contract contract, tf::BarSettings span);
+   std::future<std::vector<market_data::OHLCBar>> GetBars(tf::Contract contract, tf::BarSettings span);
    private:
    std::shared_ptr<ib::IBWrapper> ibWrapper = nullptr;
    // methods that talk to IB
@@ -24,7 +24,7 @@ class IBHistoricalService : public HistoricalService<IBHistoricalService>
     * NOTE: This blocks until complete
     * @returns a vector of OHLCBar up to the most recent
     */
-   std::vector<OHLCBar> requestHistoricalData(tf::Contract contract, tf::BarSettings span);
+   std::vector<market_data::OHLCBar> requestHistoricalData(tf::Contract contract, tf::BarSettings span);
 };
 
 } // namespace ib

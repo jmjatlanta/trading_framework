@@ -7,6 +7,9 @@
 #include <market_data/Contract.hpp>
 #include <market_data/BarSettings.hpp>
 
+namespace market_data
+{
+
 class OHLCBar
 {
    public:
@@ -35,8 +38,10 @@ template<class Derived>
 class HistoricalService
 {
    public:
-   std::future<std::vector<OHLCBar>> GetBars(tf::Contract c, tf::BarSettings span)
+   std::future<std::vector<OHLCBar>> GetBars(const tf::Contract& c, const tf::BarSettings& span)
    {
       return static_cast<Derived*>(this)->GetBars(c, span);
    }
 };
+
+} // namespace market_data

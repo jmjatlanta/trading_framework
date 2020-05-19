@@ -7,5 +7,5 @@ include_directories(../vendor
 
 file(GLOB util_src "../util/*.cpp")
 
-add_library(backtest BacktestStreamingService.cpp BacktestStrategyRunner.cpp ${util_src})
+add_library(backtest BacktestStreamingService.cpp BacktestHistoricalService.cpp BacktestStrategyRunner.cpp ${util_src})
 target_link_libraries(backtest ${CMAKE_THREAD_LIBS_INIT})

@@ -16,23 +16,31 @@ class MACross : public strategy::Strategy
       SubscribeToEvent( strategy::EventType::LAST, contract );
       SubscribeToEvent( strategy::EventType::MARKET_TIME, contract ); // Get out of trades as market is closing
    }
+   /***
+    * This is fired each time the market moves (i.e. a tick happens)
+    */
    strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
    {
-      std::chrono::time_point<std::chrono::system_clock> today;
-      bool not_long = false, not_short = false;
-
       double sma9 = SMA(9, contract);
       double sma20 = SMA(20, contract);
-      if (sma9 > sma20 && not_long ||
-         sma20 > sma9 && not_short )
+      if (!active_order && (sma9 > sma20 || sma20 > sma9 ))
          return strategy::EvaluationResult::PASSES_EVALUATION; 
       return strategy::EvaluationResult::FAILED_FOR_EVENT;
    }
+   /**
+    * This is fired if the OEM system wants to place an order on the market
+    * TODO: A generic form of the order should be returned
+    */
    strategy::EvaluationResult OnCreateOrder(strategy::Event e)
    {
       // prerequisites passed, build an order
       // pass order to OEM system
    }
+   /***
+    * This is fired if the OEM system sends an order to the market
+    * TODO: A generic form of the order should be sent as a parameter. That
+    * way we can track things like amounts
+    */
    strategy::EvaluationResult OnOrderSent(strategy::Event e)
    {
 
@@ -49,12 +57,16 @@ class MACross : public strategy::Strategy
    {
 
    }
+   /***
+    * This could get sticky. LIFO or FIFO?
+    */
    strategy::EvaluationResult OnTradeClosed(strategy::Event e)
    {
       
    }   
    protected:
    tf::Contract contract;
+   bool active_order = false;
 };
 
 int main(int argc, char** argv)

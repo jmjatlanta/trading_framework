@@ -14,17 +14,17 @@
 #include <risk_management/Order.hpp>
 #include <risk_management/Strategy.hpp>
 
-class MockHistoricalService : public HistoricalService<MockHistoricalService>
+class MockHistoricalService : public market_data::HistoricalService<MockHistoricalService>
 {
    public:
-   std::future<std::vector<OHLCBar>> GetBars(tf::Contract cont, tf::BarSettings span)
+   std::future<std::vector<market_data::OHLCBar>> GetBars(tf::Contract cont, tf::BarSettings span)
    {
       return std::async(&MockHistoricalService::do_nothing, this, cont, span);
    }
    private:
-   std::vector<OHLCBar> do_nothing(tf::Contract cont, tf::BarSettings span)
+   std::vector<market_data::OHLCBar> do_nothing(tf::Contract cont, tf::BarSettings span)
    {
-      std::vector<OHLCBar> retVal;
+      std::vector<market_data::OHLCBar> retVal;
       return retVal;
    }
 };

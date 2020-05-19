@@ -12,16 +12,16 @@ class SecurityFile
    {
       // write file
       std::ofstream out(fileName);
-      std::for_each( lines.begin(), lines.end(), [&out](const OHLCBar& in){
+      std::for_each( lines.begin(), lines.end(), [&out](const market_data::OHLCBar& in){
          out << in.toCSV() << "\n";
       });
       out.close();
    }
-   void AddBar(const OHLCBar& in)
+   void AddBar(const market_data::OHLCBar& in)
    {
       lines.push_back(in);
    }
    private:
-   std::vector<OHLCBar> lines;
+   std::vector<market_data::OHLCBar> lines;
    std::string fileName;
 };
