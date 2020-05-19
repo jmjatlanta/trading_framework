@@ -52,7 +52,7 @@ int main(int argc, char** argv)
       std::cerr << "Syntax: " << argv[0] << " [SYMBOL] [nD|nH|nM|nS]\n";
       exit(1);
    }
-   ib::IBHistoricalService ibHist(IBConfiguration("127.0.0.1", 4007, 1));
+   ib::IBHistoricalService ibHist(IBConfiguration("127.0.0.1", 4001, 1));
    std::string ticker = argv[1];
    std::string barSize = argv[2];
    tf::Contract contract(ticker);

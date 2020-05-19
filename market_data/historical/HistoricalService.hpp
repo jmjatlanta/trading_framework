@@ -2,6 +2,8 @@
 
 #include <future>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 #include <market_data/Contract.hpp>
 #include <market_data/BarSettings.hpp>
 

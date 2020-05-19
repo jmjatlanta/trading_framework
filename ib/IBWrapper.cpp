@@ -11,7 +11,7 @@
 #include "IBWrapper.h"
 #include "ib_client/ScannerSubscription.h"
 #include <market_data/Contract.hpp>
-#include "util/SysLogger.h"
+#include "util/SysLogger.hpp"
 
 namespace ib {
 

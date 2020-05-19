@@ -3,6 +3,7 @@
 #include <future>
 #include <vector>
 #include <market_data/Contract.hpp>
+#include <risk_management/Event.hpp>
 
 namespace market_data
 {
@@ -35,7 +36,7 @@ template<class Derived>
 class StreamingService
 {
    public:
-   void GetTimeAndSales(tf::Contract c, std::function<void(TickMessage)> func)
+   void GetTimeAndSales(tf::Contract c, std::function<strategy::EvaluationResult(TickMessage)> func)
    {
       return static_cast<Derived*>(this)->GetTimeAndSales(c, func);
    }

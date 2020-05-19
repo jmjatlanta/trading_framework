@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 #include "sys/syslog.h"
-#include "SysLogger.h"
+#include "SysLogger.hpp"
 
 namespace util
 {

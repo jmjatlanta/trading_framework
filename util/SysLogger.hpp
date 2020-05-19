@@ -31,6 +31,7 @@ public:
 	void setToSysLog(bool value) { toSysLog = value; }
    void setLogLevel(enum LogLevel newLevel) { log_level = newLevel; }
    void setErrorStreamToNormalStream(bool err_to_norm) { err_to_normal = err_to_norm; }
+   bool isDebug() { return log_level == LogLevel::debug; }
 private:
    // log at error level (deprecated for public use)
 	void log(std::string msg, enum LogLevel lvl = LogLevel::error);

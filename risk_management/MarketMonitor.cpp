@@ -8,11 +8,6 @@ MarketMonitor::MarketMonitor( Market mkt )
 
 }
 
-int32_t MarketMonitor::MarketOpenMinutes()
-{
-   return -1;
-}
-
 double MarketMonitor::OpeningGapPct(tf::Contract contract)
 {
    return -1.0;

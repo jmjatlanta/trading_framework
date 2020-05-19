@@ -9,4 +9,4 @@ include_directories(../vendor
    ${Boost_INCLUDE_DIRS})
 
 add_executable( tests test_main.cpp ibwrapper_test.cpp strategy_test.cpp )
-target_link_libraries(tests ib risk_management ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+target_link_libraries(tests ib backtest risk_management ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})

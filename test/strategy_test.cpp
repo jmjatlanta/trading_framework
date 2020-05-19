@@ -5,6 +5,8 @@
 #include <ib/IBHistoricalService.hpp>
 #include <ib/IBStreamingService.hpp>
 #include <ib/IBAccountService.hpp>
+#include <backtest/BacktestingConfiguration.hpp>
+#include <backtest/BacktestStrategyRunner.hpp>
 #include <market_data/historical/HistoricalService.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 #include <market_data/BarSettings.hpp>
@@ -36,8 +38,6 @@ class Scalp1 : public strategy::Strategy
    }
    strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
    {
-      if ( MarketOpenMinutes() < 30 ) // market must have been open for at least 30 minutes
-         return strategy::EvaluationResult::FAILED_FOR_EVENT;
       if (OpeningGapPct(contract) > 0.1 || LowOfDay(today, contract) > PreviousDayClose(today, contract)) // gapped up by at least 0.1%, never went red
          return strategy::EvaluationResult::FAILED_FOR_DAY;
       if ( retrace(HighOfDay(today, contract), LastTradePrice(contract)) > 0.1 ) // this contract has traded 0.1% below the high of the day after the high was created
@@ -134,16 +134,16 @@ BOOST_AUTO_TEST_SUITE ( strategy )
 BOOST_AUTO_TEST_CASE ( opening_gap )
 {
    // this is the "main" system
-   IBConfiguration config("127.0.0.1", 4007, 1);
-   strategy::StrategyRunner strategyRunner(config, config, config);
+   backtest::BacktestingConfiguration config;
+   backtest::BacktestStrategyRunner strategyRunner(config);
    // run this strategy
    strategyRunner.AddStrategy( std::make_shared<Scalp1>(tf::Contract("MSFT")));
 }
 
 BOOST_AUTO_TEST_CASE ( data_capture )
 {
-   IBConfiguration config("127.0.0.1", 4007, 1);
-   strategy::StrategyRunner strategyRunner(config, config, config);
+   backtest::BacktestingConfiguration config;
+   backtest::BacktestStrategyRunner strategyRunner(config);
    strategyRunner.AddStrategy( std::make_shared<DataCapture>(tf::Contract("AAPL")));
    //strategyRunner.AddStrategy(DataCapture(tf::Index("SPX")));
 }
