@@ -1,6 +1,7 @@
 #pragma once
 #include <risk_management/Strategy.hpp>
 #include <backtest/BacktestAccountingService.hpp>
+#include <backtest/BacktestHistoricalService.hpp>
 #include <backtest/BacktestingConfiguration.hpp>
 #include <backtest/BacktestStreamingService.hpp>
 
@@ -8,7 +9,10 @@ namespace backtest
 {
 
 
-class BacktestStrategyRunner : public strategy::StrategyRunner<BacktestStrategyRunner, BacktestStreamingService, BacktestAccountingService>
+class BacktestStrategyRunner : public strategy::StrategyRunner<BacktestStrategyRunner, 
+      BacktestStreamingService, 
+      BacktestAccountingService, 
+      BacktestHistoricalService>
 {
    public:
    BacktestStrategyRunner(const BacktestingConfiguration& config);

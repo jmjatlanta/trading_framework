@@ -1,14 +1,15 @@
 #include <risk_management/Strategy.hpp>
 #include <market_data/Contract.hpp>
 #include <backtest/BacktestingConfiguration.hpp>
+#include <backtest/BacktestHistoricalService.hpp>
 #include <backtest/BacktestStrategyRunner.hpp>
 #include <util/SysLogger.hpp>
 
 /****
  * This strategy is just to test the system and demonstrate how to write a strategy
  */
-
-class MACross : public strategy::Strategy
+template<class HistoricalService>
+class MACross : public strategy::Strategy<HistoricalService>
 {
    public:
    MACross(const tf::Contract& contract) : contract(contract)
@@ -21,8 +22,8 @@ class MACross : public strategy::Strategy
     */
    strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
    {
-      double sma9 = SMA(9, contract);
-      double sma20 = SMA(20, contract);
+      double sma9 = historicalService.SMA(9, contract);
+      double sma20 = historicalService.SMA(20, contract);
       if (!active_order && (sma9 > sma20 || sma20 > sma9 ))
          return strategy::EvaluationResult::PASSES_EVALUATION; 
       return strategy::EvaluationResult::FAILED_FOR_EVENT;
@@ -83,7 +84,7 @@ int main(int argc, char** argv)
    contract.ticker = "GNUS";
    contract.exchange = "NASDAQ";
    contract.currency = "USD";
-   auto strategy = std::make_shared<MACross>(contract);
+   auto strategy = std::make_shared<MACross<backtest::BacktestHistoricalService>>(contract);
    runner.AddStrategy( strategy );
 
    std::future<int> fut = std::async(std::launch::async, [&] { return runner.start(); } );

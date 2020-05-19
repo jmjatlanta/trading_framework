@@ -7,5 +7,5 @@ include_directories(
    ../ 
    )
 
-add_library( risk_management MarketMonitor.cpp Trade.cpp Strategy.cpp)
+add_library( risk_management Trade.cpp Strategy.cpp)
 target_link_libraries( risk_management )

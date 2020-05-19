@@ -29,30 +29,12 @@ class MockHistoricalService : public market_data::HistoricalService<MockHistoric
    }
 };
 
-class Scalp1 : public strategy::Strategy
+template<class HistoricalService>
+class Scalp1 : public strategy::Strategy<HistoricalService>
 {
    public:
-   Scalp1(tf::Contract contract) : strategy::Strategy(), contract(contract)
-   {
-      SubscribeToEvent(strategy::EventType::LAST, contract);
-   }
-   strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
-   {
-      if (OpeningGapPct(contract) > 0.1 || LowOfDay(today, contract) > PreviousDayClose(today, contract)) // gapped up by at least 0.1%, never went red
-         return strategy::EvaluationResult::FAILED_FOR_DAY;
-      if ( retrace(HighOfDay(today, contract), LastTradePrice(contract)) > 0.1 ) // this contract has traded 0.1% below the high of the day after the high was created
-         return strategy::EvaluationResult::FAILED_FOR_EVENT;    
-      
-      double sma9 = SMA(9, contract);
-      if (consolidation(4) // the last 4 bars show consolidation (lower volatility, volume, narrowing range)
-            && price_vs_bars(4) > 0 // the current price is higher than the last 4 bars
-            && volume_compare(4) > 0 // the volume of the current bar is more than the previous 3
-            && LastBidPrice(contract) - sma9 < 0.02 && LastBidPrice(contract) - sma9 > 0 // price touching sma(9)
-            //&& !price_history_below(sma9, consolidation_point) // since consolidation, price has not fallen below sma(9)
-            )
-         return strategy::EvaluationResult::PASSES_EVALUATION; 
-      return strategy::EvaluationResult::FAILED_FOR_EVENT;
-   }
+   Scalp1(tf::Contract contract);
+   strategy::EvaluationResult OnPretradeEvent(strategy::Event e );
    strategy::EvaluationResult OnCreateOrder(strategy::Event e)
    {
       // prerequisites passed, build an order
@@ -99,17 +81,44 @@ class Scalp1 : public strategy::Strategy
    uint32_t volume_compare(uint16_t numBars) { return 1; }
 };
 
+template<class HistoricalService>
+Scalp1<HistoricalService>::Scalp1(tf::Contract contract) : strategy::Strategy<HistoricalService>(), contract(contract)
+{
+   this->SubscribeToEvent(strategy::EventType::LAST, contract);
+}
+template<class HistoricalService>
+strategy::EvaluationResult Scalp1<HistoricalService>::OnPretradeEvent(strategy::Event e )
+{
+   if (this->historicalService.OpeningGapPct(contract) > 0.1 
+         || this->historicalService.LowOfDay(today, contract) > this->historicalService.PreviousDayClose(today, contract)) // gapped up by at least 0.1%, never went red
+      return strategy::EvaluationResult::FAILED_FOR_DAY;
+   if ( this->historicalService.retrace(this->historicalService.HighOfDay(today, contract), 
+         this->historicalService.LastTradePrice(contract)) > 0.1 ) // this contract has traded 0.1% below the high of the day after the high was created
+      return strategy::EvaluationResult::FAILED_FOR_EVENT;    
+   
+   double sma9 = this->historicalService.SMA(9, contract);
+   if ( this->historicalService.consolidation(4) // the last 4 bars show consolidation (lower volatility, volume, narrowing range)
+         && this->historicalService.price_vs_bars(4) > 0 // the current price is higher than the last 4 bars
+         && this->historicalService.volume_compare(4) > 0 // the volume of the current bar is more than the previous 3
+         && this->historicalService.LastBidPrice(contract) - sma9 < 0.02 && this->historicalService.LastBidPrice(contract) - sma9 > 0 // price touching sma(9)
+         //&& !price_history_below(sma9, consolidation_point) // since consolidation, price has not fallen below sma(9)
+         )
+      return strategy::EvaluationResult::PASSES_EVALUATION; 
+   return strategy::EvaluationResult::FAILED_FOR_EVENT;
+}
+
 /**
  * Capture events to CSV file
  */
-class DataCapture : public strategy::Strategy
+template<class HistoricalService>
+class DataCapture : public strategy::Strategy<HistoricalService>
 {
    public:
    DataCapture(tf::Contract contract)
    {
-      SubscribeToEvent(strategy::EventType::LAST, contract);
-      SubscribeToEvent(strategy::EventType::BID, contract);
-      SubscribeToEvent(strategy::EventType::ASK, contract);
+      this->SubscribeToEvent(strategy::EventType::LAST, contract);
+      this->SubscribeToEvent(strategy::EventType::BID, contract);
+      this->SubscribeToEvent(strategy::EventType::ASK, contract);
       std::string fileName = contract.ticker + ".CSV";
       file.open(fileName);
    }
@@ -137,14 +146,14 @@ BOOST_AUTO_TEST_CASE ( opening_gap )
    backtest::BacktestingConfiguration config;
    backtest::BacktestStrategyRunner strategyRunner(config);
    // run this strategy
-   strategyRunner.AddStrategy( std::make_shared<Scalp1>(tf::Contract("MSFT")));
+   strategyRunner.AddStrategy( std::make_shared<Scalp1<backtest::BacktestHistoricalService>>(tf::Contract("MSFT")));
 }
 
 BOOST_AUTO_TEST_CASE ( data_capture )
 {
    backtest::BacktestingConfiguration config;
    backtest::BacktestStrategyRunner strategyRunner(config);
-   strategyRunner.AddStrategy( std::make_shared<DataCapture>(tf::Contract("AAPL")));
+   strategyRunner.AddStrategy( std::make_shared<DataCapture<backtest::BacktestHistoricalService>>(tf::Contract("AAPL")));
    //strategyRunner.AddStrategy(DataCapture(tf::Index("SPX")));
 }
 

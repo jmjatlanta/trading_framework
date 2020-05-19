@@ -42,6 +42,14 @@ class HistoricalService
    {
       return static_cast<Derived*>(this)->GetBars(c, span);
    }
+   double OpeningGapPct(tf::Contract contract);
+   double LowOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract);
+   double HighOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract);
+   double PreviousDayClose(std::chrono::time_point<std::chrono::system_clock> today, tf::Contract contract);
+   double LastTradePrice(tf::Contract contract);
+   double LastBidPrice(tf::Contract contract);
+   double LastAskPrice(tf::Contract contract);
+   double SMA(uint16_t numBars, tf::Contract contract);
 };
 
 } // namespace market_data

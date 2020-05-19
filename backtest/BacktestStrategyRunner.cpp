@@ -48,7 +48,7 @@ int BacktestStrategyRunner::start()
 
 void BacktestStrategyRunner::tick_func(const market_data::TickMessage& message)
 {
-   for_each(strategies.begin(), strategies.end(), [&message](std::shared_ptr<strategy::Strategy> strategy) {
+   for_each(strategies.begin(), strategies.end(), [&message](std::shared_ptr<strategy::Strategy<BacktestHistoricalService>> strategy) {
          strategy::Event e;
          e.eventType = strategy::EventType::LAST;
          e.price = message.price;

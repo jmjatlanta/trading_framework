@@ -16,39 +16,26 @@ namespace strategy
 {
 
 /***
- * @brief keeps information about the market, exchange, and a security
- * This should probably be moved to the historical service
- */
-class MarketMonitor
-{
-   public:
-   MarketMonitor( Market market );
-   double OpeningGapPct(tf::Contract contract);
-   double LowOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract);
-   double HighOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract);
-   double PreviousDayClose(std::chrono::time_point<std::chrono::system_clock> today, tf::Contract contract);
-   double LastTradePrice(tf::Contract contract);
-   double LastBidPrice(tf::Contract contract);
-   double LastAskPrice(tf::Contract contract);
-   double SMA(uint16_t numBars, tf::Contract contract);
-};
-
-/***
  * @brief Basics of a strategy. Strategies themselves will probably be based on this class
  */
-class Strategy : public MarketMonitor
+template<class HistoricalService>
+class Strategy
 {
 
    public:
-   Strategy() : MarketMonitor( Market::NASDAQ ) {}
+   Strategy() {}
    virtual strategy::EvaluationResult OnPretradeEvent(strategy::Event e ) = 0;
    virtual strategy::EvaluationResult OnCreateOrder(strategy::Event e) = 0;
    virtual strategy::EvaluationResult OnOrderSent(strategy::Event e) = 0;
    virtual strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e) = 0;
    virtual strategy::EvaluationResult OnOrderFilled(strategy::Event e) = 0;
    virtual strategy::EvaluationResult OnOrderCanceled(strategy::Event e) = 0;
-   void SubscribeToEvent(EventType eventType, tf::Contract contract);
+   void SubscribeToEvent(strategy::EventType eventType, tf::Contract contract)
+   {
+      eventContractPairs.push_back( { eventType, contract} );
+   }
    std::vector<std::pair<EventType, tf::Contract>> eventContractPairs;
+   HistoricalService historicalService;
 };
 
 /***
@@ -56,12 +43,12 @@ class Strategy : public MarketMonitor
  * It was originally designed to handle multiple strategies. Now I don't think that is needed. So far,
  * each strategy is its own executable, with the accounting service being a separate network service
  */
-template<class Derived, class StreamingSerivce, class AccountingService>
+template<class Derived, class StreamingSerivce, class AccountingService, class HistoricalService>
 class StrategyRunner
 {
    public:
    StrategyRunner() {}
-   void AddStrategy(std::shared_ptr<Strategy> s)
+   void AddStrategy(std::shared_ptr< Strategy<HistoricalService> > s)
    {
       strategies.push_back(s);
       /*
@@ -89,10 +76,11 @@ class StrategyRunner
    // provides the minutes since market has been opened
    int32_t MarketOpenMinutes();
    protected:
-   std::vector<std::shared_ptr<Strategy>> strategies;
+   std::vector< std::shared_ptr<Strategy<HistoricalService>> > strategies;
    bool shutting_down = false;
    AccountingService accountingService;
    StreamingSerivce streamingService;
+   HistoricalService historicalService;
 };
 
 } // namespace strategy

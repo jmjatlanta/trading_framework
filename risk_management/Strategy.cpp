@@ -4,11 +4,6 @@
 namespace strategy
 {  
 
-void Strategy::SubscribeToEvent(strategy::EventType eventType, tf::Contract contract)
-{
-   eventContractPairs.push_back( { eventType, contract} );
-}
-
 /*
 // events coming from data sources
 void OnTick(market_data::TickMessage in)
