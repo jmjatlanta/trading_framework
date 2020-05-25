@@ -14,17 +14,17 @@ class MACross : public strategy::Strategy<HistoricalService>
    public:
    MACross(const tf::Contract& contract) : contract(contract)
    {
-      SubscribeToEvent( strategy::EventType::LAST, contract );
-      SubscribeToEvent( strategy::EventType::MARKET_TIME, contract ); // Get out of trades as market is closing
+      this->SubscribeToEvent( strategy::EventType::LAST, contract );
+      this->SubscribeToEvent( strategy::EventType::MARKET_TIME, contract ); // Get out of trades as market is closing
    }
    /***
     * This is fired each time the market moves (i.e. a tick happens)
     */
    strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
    {
-      double sma9 = historicalService.SMA(9, contract);
-      double sma20 = historicalService.SMA(20, contract);
-      if (!active_order && (sma9 > sma20 || sma20 > sma9 ))
+      auto sma9 = historicalService.SMA(9, contract);
+      auto sma20 = historicalService.SMA(20, contract);
+      if ( sma9 && sma20 && !active_order && (sma9.value() > sma20.value() || sma20.value() > sma9.value() ))
          return strategy::EvaluationResult::PASSES_EVALUATION; 
       return strategy::EvaluationResult::FAILED_FOR_EVENT;
    }
@@ -66,6 +66,7 @@ class MACross : public strategy::Strategy<HistoricalService>
       
    }   
    protected:
+   HistoricalService historicalService;
    tf::Contract contract;
    bool active_order = false;
 };

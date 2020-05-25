@@ -16,6 +16,9 @@ class IBHistoricalService : public market_data::HistoricalService<IBHistoricalSe
    public:
    IBHistoricalService(const IBConfiguration& config);
    std::future<std::vector<market_data::OHLCBar>> GetBars(tf::Contract contract, tf::BarSettings span);
+   virtual std::optional<double> LastBidPrice(tf::Contract contract) { return 0.0; }
+   virtual std::optional<double> LastAskPrice(tf::Contract contract) { return 0.0; }
+   virtual std::optional<double> SMA(uint16_t numBars, tf::Contract contract, bool market_hours = true) { return 0.0; }
    private:
    std::shared_ptr<ib::IBWrapper> ibWrapper = nullptr;
    // methods that talk to IB

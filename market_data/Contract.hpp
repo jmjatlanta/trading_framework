@@ -24,6 +24,7 @@ class Contract
    std::string currency;
    std::string exchange;
    SecurityType securityType;
+   friend bool operator < (const Contract& lhs, const Contract& rhs );
 };
 
 class Index : public Contract

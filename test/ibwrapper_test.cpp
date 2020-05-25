@@ -19,6 +19,10 @@ class MockHistoricalService : public market_data::HistoricalService<MockHistoric
    {
       return std::async(&MockHistoricalService::do_nothing, this, cont, span);
    }
+   virtual std::optional<double> LastBidPrice(tf::Contract contract) { return 0.0; }
+   virtual std::optional<double> LastAskPrice(tf::Contract contract) { return 0.0; }
+   virtual std::optional<double> SMA(uint16_t numBars, tf::Contract contract, bool market_hours = true) { return 0.0; }
+
    private:
    std::vector<market_data::OHLCBar> do_nothing(tf::Contract cont, tf::BarSettings span)
    {

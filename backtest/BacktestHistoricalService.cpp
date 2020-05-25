@@ -9,15 +9,15 @@ namespace backtest
  * @param span the parameters for what to get
  * @returns a future that will be the vector of bars
  */
-std::future< std::vector<market_data::OHLCBar> > BacktestHistoricalService::GetBars(const tf::Contract& contract, const tf::BarSettings& span)
+std::future< std::list<market_data::OHLCBar> > BacktestHistoricalService::GetBars(const tf::Contract& contract, const tf::BarSettings& span)
 {
    return std::async(&BacktestHistoricalService::get_bars, this, contract, span);
 }
 
-std::vector<market_data::OHLCBar> BacktestHistoricalService::get_bars(const tf::Contract& contract, const tf::BarSettings& span)
+std::list<market_data::OHLCBar> BacktestHistoricalService::get_bars(const tf::Contract& contract, const tf::BarSettings& span)
 {
-   std::vector<market_data::OHLCBar> ret_val;
-   return ret_val;
+   auto stats = contract_stats[contract];
+   return stats.bars;
 }
 
 } // namespace backtest

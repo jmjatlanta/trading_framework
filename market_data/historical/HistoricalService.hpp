@@ -1,9 +1,10 @@
 #pragma once
 
 #include <future>
-#include <vector>
+#include <list>
 #include <sstream>
 #include <iomanip>
+#include <optional>
 #include <market_data/Contract.hpp>
 #include <market_data/BarSettings.hpp>
 
@@ -32,24 +33,28 @@ class OHLCBar
             << volume;
       return out.str();
    }
+   bool operator < (const OHLCBar& in)
+   {
+      return timestamp < in.timestamp;
+   }
 };
 
 template<class Derived>
 class HistoricalService
 {
    public:
-   std::future<std::vector<OHLCBar>> GetBars(const tf::Contract& c, const tf::BarSettings& span)
+   std::future<std::list<OHLCBar>> GetBars(const tf::Contract& c, const tf::BarSettings& span)
    {
       return static_cast<Derived*>(this)->GetBars(c, span);
    }
-   double OpeningGapPct(tf::Contract contract);
-   double LowOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract);
-   double HighOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract);
-   double PreviousDayClose(std::chrono::time_point<std::chrono::system_clock> today, tf::Contract contract);
-   double LastTradePrice(tf::Contract contract);
-   double LastBidPrice(tf::Contract contract);
-   double LastAskPrice(tf::Contract contract);
-   double SMA(uint16_t numBars, tf::Contract contract);
+   std::optional<double> OpeningGapPct(tf::Contract contract);
+   std::optional<double> LowOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract, bool market_hours = true);
+   std::optional<double> HighOfDay(std::chrono::time_point<std::chrono::system_clock> date, tf::Contract contract, bool market_hours = true);
+   std::optional<double> PreviousDayClose(std::chrono::time_point<std::chrono::system_clock> today, tf::Contract contract);
+   std::optional<double> LastTradePrice(tf::Contract contract);
+   virtual std::optional<double> LastBidPrice(tf::Contract contract) = 0;
+   virtual std::optional<double> LastAskPrice(tf::Contract contract) = 0;
+   virtual std::optional<double> SMA(uint16_t numBars, tf::Contract contract, bool market_hours = true) = 0;
 };
 
 } // namespace market_data

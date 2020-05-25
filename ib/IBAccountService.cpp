@@ -1,4 +1,5 @@
 #include <util/Configuration.hpp>
+#include <util/Time.hpp>
 #include <ib/IBAccountService.hpp>
 
 namespace ib
@@ -24,6 +25,20 @@ IBAccountService::IBAccountService(const IBConfiguration& config)
 std::vector<risk_management::Order> IBAccountService::GetOpenOrders(uint16_t accountId)
 {
    return std::vector<risk_management::Order>();
+}
+
+bool IBAccountService::MarketOpen( strategy::Market mkt )
+{
+   struct tm* local_time = util::adjust_to_eastern( std::chrono::system_clock::now() );
+   // are we on a weekday
+   if (local_time->tm_wday == 0 || local_time->tm_wday == 6 )
+      return false;
+   // are we within market hours
+   if ( (local_time->tm_hour < 9 )
+         || (local_time->tm_hour == 9 && local_time->tm_min < 30)
+         || (local_time->tm_hour >= 16 ) )
+      return false;
+   return true;
 }
 
 } // namespace ib

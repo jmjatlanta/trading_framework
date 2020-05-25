@@ -10,7 +10,8 @@ template<class Derived>
 class AccountService
 {
    public:
-   std::vector<risk_management::Order> GetOpenOrders();
+   virtual std::vector<risk_management::Order> GetOpenOrders(uint16_t account_id) = 0;
+   virtual bool MarketOpen( strategy::Market mkt ) = 0;
 
 };
 

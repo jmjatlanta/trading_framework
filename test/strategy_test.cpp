@@ -66,7 +66,7 @@ class Scalp1 : public strategy::Strategy<HistoricalService>
    /***
     * What percentage retrace is this price?
     */
-   double retrace(double highOfDay, double lastTradePrice) { return 0.0; }
+   double retrace(std::optional<double> highOfDay, std::optional<double> lastTradePrice) { return 0.0; }
    /**
     * Has the security been consolidating within that time?
     */
@@ -92,15 +92,17 @@ strategy::EvaluationResult Scalp1<HistoricalService>::OnPretradeEvent(strategy::
    if (this->historicalService.OpeningGapPct(contract) > 0.1 
          || this->historicalService.LowOfDay(today, contract) > this->historicalService.PreviousDayClose(today, contract)) // gapped up by at least 0.1%, never went red
       return strategy::EvaluationResult::FAILED_FOR_DAY;
-   if ( this->historicalService.retrace(this->historicalService.HighOfDay(today, contract), 
+   if ( this->retrace(this->historicalService.HighOfDay(today, contract), 
          this->historicalService.LastTradePrice(contract)) > 0.1 ) // this contract has traded 0.1% below the high of the day after the high was created
       return strategy::EvaluationResult::FAILED_FOR_EVENT;    
    
-   double sma9 = this->historicalService.SMA(9, contract);
-   if ( this->historicalService.consolidation(4) // the last 4 bars show consolidation (lower volatility, volume, narrowing range)
-         && this->historicalService.price_vs_bars(4) > 0 // the current price is higher than the last 4 bars
-         && this->historicalService.volume_compare(4) > 0 // the volume of the current bar is more than the previous 3
-         && this->historicalService.LastBidPrice(contract) - sma9 < 0.02 && this->historicalService.LastBidPrice(contract) - sma9 > 0 // price touching sma(9)
+   auto sma9 = this->historicalService.SMA(9, contract);
+   auto last_bid = this->historicalService.LastBidPrice(contract);
+   if ( sma9 && last_bid
+         && this->consolidation(4) // the last 4 bars show consolidation (lower volatility, volume, narrowing range)
+         && this->price_vs_bars(4) > 0 // the current price is higher than the last 4 bars
+         && this->volume_compare(4) > 0 // the volume of the current bar is more than the previous 3
+         && last_bid.value() - sma9.value() < 0.02 && last_bid.value() - sma9.value() > 0 // price touching sma(9)
          //&& !price_history_below(sma9, consolidation_point) // since consolidation, price has not fallen below sma(9)
          )
       return strategy::EvaluationResult::PASSES_EVALUATION; 

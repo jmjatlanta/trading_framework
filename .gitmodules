@@ -1,3 +1,9 @@
 [submodule "quandl-cpp"]
 	path = quandl-cpp
 	url = git@github.com:danielcardeenas/quandl-cpp.git
+[submodule "vendor/date"]
+	path = vendor/date
+	url = git@github.com:HowardHinnant/date
+[submodule "vendor/pgfe"]
+	path = vendor/pgfe
+	url = https://github.com/dmitigr/pgfe
