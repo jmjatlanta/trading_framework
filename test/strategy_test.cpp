@@ -35,28 +35,28 @@ class Scalp1 : public strategy::Strategy<HistoricalService>
    public:
    Scalp1(tf::Contract contract);
    strategy::EvaluationResult OnPretradeEvent(strategy::Event e );
-   strategy::EvaluationResult OnCreateOrder(strategy::Event e)
+   strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order)
    {
       // prerequisites passed, build an order
       // pass order to OEM system
    }
-   strategy::EvaluationResult OnOrderSent(strategy::Event e)
+   strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e)
+   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderFilled(strategy::Event e)
+   strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderCanceled(strategy::Event e)
+   strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnTradeClosed(strategy::Event e)
+   strategy::EvaluationResult OnTradeClosed(strategy::Event e, const tf::Order& order)
    {
       
    }
@@ -127,15 +127,16 @@ class DataCapture : public strategy::Strategy<HistoricalService>
    strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
    {
       // print time,event,value
+      using namespace date;
       file << e.timestamp << "," << e.eventType << "," << e.price << std::endl;
       return strategy::EvaluationResult::FAILED_FOR_EVENT;
    }
-   strategy::EvaluationResult OnCreateOrder(strategy::Event e) { }
-   strategy::EvaluationResult OnOrderSent(strategy::Event e) { }
-   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e) { }
-   strategy::EvaluationResult OnOrderFilled(strategy::Event e) { }
-   strategy::EvaluationResult OnOrderCanceled(strategy::Event e) { }
-   strategy::EvaluationResult OnTradeClosed(strategy::Event e) { }
+   strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order) { }
+   strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order) { }
+   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order) { }
+   strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order) { }
+   strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order) { }
+   strategy::EvaluationResult OnTradeClosed(strategy::Event e, const tf::Order& order) { }
    private:
    std::ofstream file;
 };

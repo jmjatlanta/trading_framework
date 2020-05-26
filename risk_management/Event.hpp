@@ -14,14 +14,15 @@ enum EvaluationResult
 
 enum Market { NASDAQ, NYSE };
 
-enum EventType { BID, ASK, LAST, MARKET_TIME };
+enum EventType { BID, ASK, LAST, MARKET_OPEN, MARKET_CLOSE };
 
 class Event
 {
    public:
    Event() {}
-   Event(std::string timestamp, EventType eventType, double price) : timestamp(timestamp), eventType(eventType), price(price) {} 
-   std::string timestamp;
+   Event(const std::chrono::system_clock::time_point timestamp, EventType eventType, double price) 
+         : timestamp(timestamp), eventType(eventType), price(price) {} 
+   std::chrono::system_clock::time_point timestamp;
    EventType eventType;
    double price;
 

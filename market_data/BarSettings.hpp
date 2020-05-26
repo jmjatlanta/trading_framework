@@ -6,7 +6,8 @@
 namespace tf
 {
 
-enum BarTimeSpan { 
+enum BarTimeSpan {
+   TICK, 
    ONE_SECOND, 
    FIVE_SECONDS,
    FIFTEEN_SECONDS, 

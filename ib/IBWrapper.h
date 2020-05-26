@@ -59,9 +59,9 @@ class TickMessage
 {
    public:
    TickType tickType;
-   double price;
-   unsigned long volume;
-   std::string message;
+   double price = 0;
+   unsigned long volume = 0;
+   std::string message = "";
 };
 
 class BookMessage

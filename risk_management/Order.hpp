@@ -25,3 +25,17 @@ class Order
 };
 
 } // namespace risk_management
+
+namespace tf
+{
+
+class Order
+{
+   public:
+   long num_shares;
+   double limit_price;
+   tf::Contract contract;
+   bool going_long = false;
+};
+
+} // namespace tf

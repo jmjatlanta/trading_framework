@@ -78,6 +78,8 @@ market_data::TickType IBTickTypeToMDTickType(TickType ib_tt)
          return market_data::TickType::ASK;
       case TickType::LAST:
          return market_data::TickType::LAST;
+      case TickType::LAST_SIZE:
+         return market_data::TickType::VOLUME;
       default:
          return market_data::TickType::TEXT;
    }

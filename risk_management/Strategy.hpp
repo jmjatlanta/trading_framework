@@ -10,6 +10,7 @@
 #include <market_data/streaming/StreamingService.hpp>
 #include <market_data/historical/HistoricalService.hpp>
 #include <market_data/accounting/AccountingService.hpp>
+#include <risk_management/Order.hpp>
 #include <risk_management/Event.hpp>
 
 namespace strategy
@@ -25,11 +26,11 @@ class Strategy
    public:
    Strategy() {}
    virtual strategy::EvaluationResult OnPretradeEvent(strategy::Event e ) = 0;
-   virtual strategy::EvaluationResult OnCreateOrder(strategy::Event e) = 0;
-   virtual strategy::EvaluationResult OnOrderSent(strategy::Event e) = 0;
-   virtual strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e) = 0;
-   virtual strategy::EvaluationResult OnOrderFilled(strategy::Event e) = 0;
-   virtual strategy::EvaluationResult OnOrderCanceled(strategy::Event e) = 0;
+   virtual strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order) = 0;
+   virtual strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order) = 0;
+   virtual strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order) = 0;
+   virtual strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order) = 0;
+   virtual strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order) = 0;
    void SubscribeToEvent(strategy::EventType eventType, tf::Contract contract)
    {
       eventContractPairs.push_back( { eventType, contract} );

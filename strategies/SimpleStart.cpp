@@ -15,7 +15,7 @@ class MACross : public strategy::Strategy<HistoricalService>
    MACross(const tf::Contract& contract) : contract(contract)
    {
       this->SubscribeToEvent( strategy::EventType::LAST, contract );
-      this->SubscribeToEvent( strategy::EventType::MARKET_TIME, contract ); // Get out of trades as market is closing
+      this->SubscribeToEvent( strategy::EventType::MARKET_CLOSE, contract ); // Get out of trades as market is closing
    }
    /***
     * This is fired each time the market moves (i.e. a tick happens)
@@ -32,7 +32,7 @@ class MACross : public strategy::Strategy<HistoricalService>
     * This is fired if the OEM system wants to place an order on the market
     * TODO: A generic form of the order should be returned
     */
-   strategy::EvaluationResult OnCreateOrder(strategy::Event e)
+   strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order)
    {
       // prerequisites passed, build an order
       // pass order to OEM system
@@ -42,19 +42,19 @@ class MACross : public strategy::Strategy<HistoricalService>
     * TODO: A generic form of the order should be sent as a parameter. That
     * way we can track things like amounts
     */
-   strategy::EvaluationResult OnOrderSent(strategy::Event e)
+   strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e)
+   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderFilled(strategy::Event e)
+   strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderCanceled(strategy::Event e)
+   strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order)
    {
 
    }

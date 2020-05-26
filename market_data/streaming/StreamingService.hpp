@@ -8,17 +8,17 @@
 namespace market_data
 {
 
-enum TickType { BID, ASK, LAST, VOLUME, TEXT };
+enum TickType { BID, ASK, LAST, VOLUME, TEXT, UNKNOWN };
 
 class TickMessage
 {
    public:
    TickMessage(TickType tt, double price, long volume, std::string message) 
-      : tickType(tt), price(price), volume(volume), message(message) {}
+      : tickType(tt), price(price), volume(volume), text_message(message) {}
    TickType tickType;
-   double price;
-   long volume;
-   std::string message;
+   double price = 0.0;
+   long volume = 0;
+   std::string text_message = "";
 };
 
 class BookMessage
