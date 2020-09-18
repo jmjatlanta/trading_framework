@@ -16,7 +16,7 @@ std::string get_dir(const tf::Contract& contract, const tf::BarTimeSpan& span)
    // security type
    switch (contract.securityType)
    {
-      case tf::SecurityType::STOCK:
+      case tf::SecurityType::SECURITY_TYPE_STOCK:
          out += "STOCK/";
          break;
       default:

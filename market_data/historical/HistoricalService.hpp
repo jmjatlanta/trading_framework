@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <optional>
-#include <market_data/Contract.hpp>
+#include <domain/Contract.hpp>
 #include <market_data/BarSettings.hpp>
 
 namespace market_data

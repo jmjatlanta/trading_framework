@@ -1,4 +1,4 @@
-#include <risk_management/Strategy.hpp>
+#include <domain/Strategy.hpp>
 
 #include <ib/IBAccountService.hpp>
 #include <ib/IBHistoricalService.hpp>
@@ -7,7 +7,7 @@
 namespace ib
 {
 
-class IBStrategyRunner : public risk_management::StrategyRunner<IBStrategyRunner>
+class IBStrategyRunner : public tf::StrategyRunner<IBStrategyRunner>
 {
    public:
    IBStrategyRunner(const IBConfiguration& accountConfig, const IBConfiguration& historicalConfig, const IBConfiguration& streamingConfig);

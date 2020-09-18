@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
+#include <chrono>
 
-namespace strategy
+namespace tf
 {
 
 enum EvaluationResult
@@ -28,4 +29,4 @@ class Event
 
 };
 
-} // namespace strategy
+} // namespace tf

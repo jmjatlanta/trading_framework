@@ -1,5 +1,5 @@
 #pragma once
-#include <risk_management/Strategy.hpp>
+#include <domain/Strategy.hpp>
 #include <backtest/BacktestAccountingService.hpp>
 #include <backtest/BacktestHistoricalService.hpp>
 #include <backtest/BacktestingConfiguration.hpp>
@@ -31,7 +31,7 @@ class BacktestStrategyResult
    std::vector<Trade> trades;
 };
 
-class BacktestStrategyRunner : public strategy::StrategyRunner<BacktestStrategyRunner, 
+class BacktestStrategyRunner : public tf::StrategyRunner<BacktestStrategyRunner, 
       BacktestStreamingService, 
       BacktestAccountingService, 
       BacktestHistoricalService>
@@ -47,7 +47,7 @@ class BacktestStrategyRunner : public strategy::StrategyRunner<BacktestStrategyR
    void tick_func(const market_data::TickMessage& message);
    BacktestingConfiguration config;
    BacktestStrategyResult result;
-   void process_event(std::shared_ptr<strategy::Strategy<BacktestHistoricalService>> strategy, const strategy::Event& e);
+   void process_event(std::shared_ptr<tf::Strategy<BacktestHistoricalService>> strategy, const tf::Event& e);
 };
 
 } // namespace backtest

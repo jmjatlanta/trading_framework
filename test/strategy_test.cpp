@@ -10,9 +10,9 @@
 #include <market_data/historical/HistoricalService.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 #include <market_data/BarSettings.hpp>
-#include <market_data/Contract.hpp>
-#include <risk_management/Order.hpp>
-#include <risk_management/Strategy.hpp>
+#include <domain/Contract.hpp>
+#include <domain/Order.hpp>
+#include <domain/Strategy.hpp>
 
 class MockHistoricalService : public market_data::HistoricalService<MockHistoricalService>
 {
@@ -30,33 +30,33 @@ class MockHistoricalService : public market_data::HistoricalService<MockHistoric
 };
 
 template<class HistoricalService>
-class Scalp1 : public strategy::Strategy<HistoricalService>
+class Scalp1 : public tf::Strategy<HistoricalService>
 {
    public:
    Scalp1(tf::Contract contract);
-   strategy::EvaluationResult OnPretradeEvent(strategy::Event e );
-   strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order)
+   tf::EvaluationResult OnPretradeEvent(tf::Event e );
+   tf::EvaluationResult OnCreateOrder(tf::Event e, tf::Order& order)
    {
       // prerequisites passed, build an order
       // pass order to OEM system
    }
-   strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderSent(tf::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderPartiallyFilled(tf::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderFilled(tf::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderCanceled(tf::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnTradeClosed(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnTradeClosed(tf::Event e, const tf::Order& order)
    {
       
    }
@@ -82,19 +82,19 @@ class Scalp1 : public strategy::Strategy<HistoricalService>
 };
 
 template<class HistoricalService>
-Scalp1<HistoricalService>::Scalp1(tf::Contract contract) : strategy::Strategy<HistoricalService>(), contract(contract)
+Scalp1<HistoricalService>::Scalp1(tf::Contract contract) : tf::Strategy<HistoricalService>(), contract(contract)
 {
-   this->SubscribeToEvent(strategy::EventType::LAST, contract);
+   this->SubscribeToEvent(tf::EventType::LAST, contract);
 }
 template<class HistoricalService>
-strategy::EvaluationResult Scalp1<HistoricalService>::OnPretradeEvent(strategy::Event e )
+tf::EvaluationResult Scalp1<HistoricalService>::OnPretradeEvent(tf::Event e )
 {
    if (this->historicalService.OpeningGapPct(contract) > 0.1 
          || this->historicalService.LowOfDay(today, contract) > this->historicalService.PreviousDayClose(today, contract)) // gapped up by at least 0.1%, never went red
-      return strategy::EvaluationResult::FAILED_FOR_DAY;
+      return tf::EvaluationResult::FAILED_FOR_DAY;
    if ( this->retrace(this->historicalService.HighOfDay(today, contract), 
          this->historicalService.LastTradePrice(contract)) > 0.1 ) // this contract has traded 0.1% below the high of the day after the high was created
-      return strategy::EvaluationResult::FAILED_FOR_EVENT;    
+      return tf::EvaluationResult::FAILED_FOR_EVENT;    
    
    auto sma9 = this->historicalService.SMA(9, contract);
    auto last_bid = this->historicalService.LastBidPrice(contract);
@@ -105,38 +105,38 @@ strategy::EvaluationResult Scalp1<HistoricalService>::OnPretradeEvent(strategy::
          && last_bid.value() - sma9.value() < 0.02 && last_bid.value() - sma9.value() > 0 // price touching sma(9)
          //&& !price_history_below(sma9, consolidation_point) // since consolidation, price has not fallen below sma(9)
          )
-      return strategy::EvaluationResult::PASSES_EVALUATION; 
-   return strategy::EvaluationResult::FAILED_FOR_EVENT;
+      return tf::EvaluationResult::PASSES_EVALUATION; 
+   return tf::EvaluationResult::FAILED_FOR_EVENT;
 }
 
 /**
  * Capture events to CSV file
  */
 template<class HistoricalService>
-class DataCapture : public strategy::Strategy<HistoricalService>
+class DataCapture : public tf::Strategy<HistoricalService>
 {
    public:
    DataCapture(tf::Contract contract)
    {
-      this->SubscribeToEvent(strategy::EventType::LAST, contract);
-      this->SubscribeToEvent(strategy::EventType::BID, contract);
-      this->SubscribeToEvent(strategy::EventType::ASK, contract);
+      this->SubscribeToEvent(tf::EventType::LAST, contract);
+      this->SubscribeToEvent(tf::EventType::BID, contract);
+      this->SubscribeToEvent(tf::EventType::ASK, contract);
       std::string fileName = contract.ticker + ".CSV";
       file.open(fileName);
    }
-   strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
+   tf::EvaluationResult OnPretradeEvent(tf::Event e )
    {
       // print time,event,value
       using namespace date;
       file << e.timestamp << "," << e.eventType << "," << e.price << std::endl;
-      return strategy::EvaluationResult::FAILED_FOR_EVENT;
+      return tf::EvaluationResult::FAILED_FOR_EVENT;
    }
-   strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order) { }
-   strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order) { }
-   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order) { }
-   strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order) { }
-   strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order) { }
-   strategy::EvaluationResult OnTradeClosed(strategy::Event e, const tf::Order& order) { }
+   tf::EvaluationResult OnCreateOrder(tf::Event e, tf::Order& order) { }
+   tf::EvaluationResult OnOrderSent(tf::Event e, const tf::Order& order) { }
+   tf::EvaluationResult OnOrderPartiallyFilled(tf::Event e, const tf::Order& order) { }
+   tf::EvaluationResult OnOrderFilled(tf::Event e, const tf::Order& order) { }
+   tf::EvaluationResult OnOrderCanceled(tf::Event e, const tf::Order& order) { }
+   tf::EvaluationResult OnTradeClosed(tf::Event e, const tf::Order& order) { }
    private:
    std::ofstream file;
 };

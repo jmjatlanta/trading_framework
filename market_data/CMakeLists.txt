@@ -7,5 +7,5 @@ include_directories(
    ../ 
    )
 
-add_library( market_data BarSettings.cpp Contract.cpp )
+add_library( market_data BarSettings.cpp )
 target_link_libraries( market_data )

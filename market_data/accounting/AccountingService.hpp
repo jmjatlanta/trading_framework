@@ -2,7 +2,7 @@
 
 #include <future>
 #include <vector>
-#include <risk_management/Event.hpp>
+#include <domain/Event.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 
 namespace market_data
@@ -12,7 +12,7 @@ template<class Derived>
 class AccountingService
 {
    public:
-   void GetTimeAndSales(tf::Contract c, std::function<strategy::EvaluationResult(TickMessage)> func)
+   void GetTimeAndSales(tf::Contract c, std::function<tf::EvaluationResult(TickMessage)> func)
    {
       return static_cast<Derived*>(this)->GetTimeAndSales(c, func);
    }

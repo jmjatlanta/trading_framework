@@ -3,18 +3,18 @@
 #include <memory>
 #include <ib/IBWrapper.h>
 #include <ib/IBConfiguration.hpp>
-#include <risk_management/AccountService.hpp>
-#include <risk_management/Order.hpp>
+#include <domain/AccountService.hpp>
+#include <domain/Order.hpp>
 
 namespace ib
 {
 
-class IBAccountService : public risk_management::AccountService<IBAccountService>
+class IBAccountService : public tf::AccountService<IBAccountService>
 {
    public:
    IBAccountService(const IBConfiguration& config);
-   std::vector<risk_management::Order> GetOpenOrders(uint16_t accountId);
-   bool MarketOpen( strategy::Market mkt );
+   std::vector<tf::Order> GetOpenOrders(uint16_t accountId);
+   bool MarketOpen( tf::Market mkt );
    private:
    std::shared_ptr<ib::IBWrapper> ibWrapper = nullptr;
 };

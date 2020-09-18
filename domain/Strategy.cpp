@@ -1,7 +1,7 @@
 #include <algorithm>
-#include <risk_management/Strategy.hpp>
+#include <domain/Strategy.hpp>
 
-namespace strategy
+namespace tf
 {  
 
 /*

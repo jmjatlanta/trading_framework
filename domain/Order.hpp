@@ -2,32 +2,29 @@
 #include <cstdint>
 #include <string>
 
-namespace risk_management
+#include <domain/Contract.hpp>
+
+namespace tf
 {
 
 enum OrderStatus {
-   UNKNOWN,
-   UNSENT,
-   SENT,
-   AWAITING_EXECUTION,
-   REJECTED,
-   CANCELED,
-   PARTIALLY_FILLED,
-   FILLED
+   ORDER_STATUS_UNKNOWN,
+   ORDER_STATUS_UNSENT,
+   ORDER_STATUS_SENT,
+   ORDER_STATUS_AWAITING_EXECUTION,
+   ORDER_STATUS_REJECTED,
+   ORDER_STATUS_CANCELED,
+   ORDER_STATUS_PARTIALLY_FILLED,
+   ORDER_STATUS_FILLED
 };
 
-class Order
+class OrderInfo
 {
    public:
    OrderStatus status;
    std::uint64_t id;
    std::string brokerId;
 };
-
-} // namespace risk_management
-
-namespace tf
-{
 
 class Order
 {

@@ -31,4 +31,4 @@ Modularize the underlying systems and concentrate on building the components tha
 
 ##### Where to go from here
 
-Check out the [technical implementation documentation](TECHNICAL_IMPLEMENTATION.md).
+Check out the [technical implementation documentation](docs/TECHNICAL_IMPLEMENTATION.md).

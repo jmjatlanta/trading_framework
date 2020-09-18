@@ -6,14 +6,14 @@
 #include <cstdint>
 #include <memory>
 #include <functional>
-#include <market_data/Contract.hpp>
+#include <domain/Contract.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 #include <market_data/historical/HistoricalService.hpp>
 #include <market_data/accounting/AccountingService.hpp>
-#include <risk_management/Order.hpp>
-#include <risk_management/Event.hpp>
+#include <domain/Order.hpp>
+#include <domain/Event.hpp>
 
-namespace strategy
+namespace tf
 {
 
 /***
@@ -25,13 +25,13 @@ class Strategy
 
    public:
    Strategy() {}
-   virtual strategy::EvaluationResult OnPretradeEvent(strategy::Event e ) = 0;
-   virtual strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order) = 0;
-   virtual strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order) = 0;
-   virtual strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order) = 0;
-   virtual strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order) = 0;
-   virtual strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order) = 0;
-   void SubscribeToEvent(strategy::EventType eventType, tf::Contract contract)
+   virtual tf::EvaluationResult OnPretradeEvent(tf::Event e ) = 0;
+   virtual tf::EvaluationResult OnCreateOrder(tf::Event e, tf::Order& order) = 0;
+   virtual tf::EvaluationResult OnOrderSent(tf::Event e, const tf::Order& order) = 0;
+   virtual tf::EvaluationResult OnOrderPartiallyFilled(tf::Event e, const tf::Order& order) = 0;
+   virtual tf::EvaluationResult OnOrderFilled(tf::Event e, const tf::Order& order) = 0;
+   virtual tf::EvaluationResult OnOrderCanceled(tf::Event e, const tf::Order& order) = 0;
+   void SubscribeToEvent(tf::EventType eventType, tf::Contract contract)
    {
       eventContractPairs.push_back( { eventType, contract} );
    }
@@ -84,4 +84,4 @@ class StrategyRunner
    HistoricalService historicalService;
 };
 
-} // namespace strategy
+} // namespace tf

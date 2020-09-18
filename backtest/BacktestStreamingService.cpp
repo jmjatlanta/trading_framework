@@ -16,7 +16,7 @@ BacktestStreamingService::BacktestStreamingService(const BacktestingConfiguratio
  * @param contract the contract to subscribe to
  * @param func the callback function to call each time data comes in
  */
-void BacktestStreamingService::GetTimeAndSales(tf::Contract contract, std::function<strategy::EvaluationResult(market_data::TickMessage)> func)
+void BacktestStreamingService::GetTimeAndSales(tf::Contract contract, std::function<tf::EvaluationResult(market_data::TickMessage)> func)
 {
    // flip through the file, firing events for every line
    std::ifstream file("hello.txt");

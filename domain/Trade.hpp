@@ -8,7 +8,7 @@
 
 #include <vector>
 
-#include <risk_management/Order.hpp>
+#include <domain/Order.hpp>
 
 class Trade
 {

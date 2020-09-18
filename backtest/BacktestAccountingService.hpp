@@ -2,7 +2,7 @@
 
 #include <chrono>
 #include <market_data/accounting/AccountingService.hpp>
-#include <risk_management/Strategy.hpp>
+#include <domain/Strategy.hpp>
 #include <vendor/date/include/date/tz.h>
 #include <util/SysLogger.hpp>
 #include <util/Time.hpp>
@@ -38,7 +38,7 @@ class BacktestAccountingService : public market_data::AccountingService<Backtest
     * @param the market to check (currently unused, expects a NY market
     * @returns TRUE if the market is opened based on the "current time" of the simulation
     */
-   bool MarketOpen( strategy::Market exch )
+   bool MarketOpen( tf::Market exch )
    {
       struct tm* local_time = util::adjust_to_eastern( currentTime );
       // are we on a weekday

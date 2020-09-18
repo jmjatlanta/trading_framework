@@ -30,13 +30,13 @@ BOOST_AUTO_TEST_CASE( accounting_test )
 {
    backtest::BacktestAccountingService acct_svc;
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 24 2020 13:00:00" )); // a Sunday, 9AM Eastern
-   BOOST_CHECK( !acct_svc.MarketOpen( strategy::NASDAQ ) );
+   BOOST_CHECK( !acct_svc.MarketOpen( tf::Market::NASDAQ ) );
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 25 2020 13:00:00" )); // a Monday pre-market
-   BOOST_CHECK( !acct_svc.MarketOpen( strategy::NASDAQ ) );
+   BOOST_CHECK( !acct_svc.MarketOpen( tf::Market::NASDAQ ) );
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 25 2020 13:30:00" )); // a Monday at market open
-   BOOST_CHECK( acct_svc.MarketOpen( strategy::NASDAQ ) );
+   BOOST_CHECK( acct_svc.MarketOpen( tf::Market::NASDAQ ) );
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 25 2020 20:00:01" )); // a Monday at market close
-   BOOST_CHECK( !acct_svc.MarketOpen( strategy::NASDAQ ) );
+   BOOST_CHECK( !acct_svc.MarketOpen( tf::Market::NASDAQ ) );
 }
 
 BOOST_AUTO_TEST_CASE( history_test )
@@ -69,44 +69,44 @@ BOOST_AUTO_TEST_CASE( strategy_runner_test )
    config.startingCapital = 100000.0;
 
    // strategy to buy on a down tick, sell on an up tick
-   class CrazyStrategy : public strategy::Strategy<backtest::BacktestHistoricalService>
+   class CrazyStrategy : public tf::Strategy<backtest::BacktestHistoricalService>
    {
       public:
       CrazyStrategy() {}
-      strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
+      tf::EvaluationResult OnPretradeEvent(tf::Event e )
       {
-         if (e.eventType == strategy::EventType::MARKET_CLOSE)
+         if (e.eventType == tf::EventType::MARKET_CLOSE)
          {
             // market is closing
             if (current_shares != 0)
-               return strategy::EvaluationResult::PASSES_EVALUATION;
-            return strategy::FAILED_FOR_DAY;
+               return tf::EvaluationResult::PASSES_EVALUATION;
+            return tf::FAILED_FOR_DAY;
          }
          // is this the first time through?
          if (previous_event.price == 0)
          {
             previous_event = e;
-            return strategy::EvaluationResult::FAILED_FOR_EVENT;
+            return tf::EvaluationResult::FAILED_FOR_EVENT;
          }
          if (current_shares > 0)
          {
             // only allow short
             if (previous_event.price > e.price) // ticked down
-               return strategy::EvaluationResult::PASSES_EVALUATION;
+               return tf::EvaluationResult::PASSES_EVALUATION;
          }
          if (current_shares < 0)
          {
             // only allow long
             if (previous_event.price < e.price) // ticked up
-               return strategy::EvaluationResult::PASSES_EVALUATION;
+               return tf::EvaluationResult::PASSES_EVALUATION;
          }
          if (current_shares == 0 && previous_event.price != e.price) // allow either
-            return strategy::EvaluationResult::PASSES_EVALUATION;
-         return strategy::EvaluationResult::FAILED_FOR_EVENT;
+            return tf::EvaluationResult::PASSES_EVALUATION;
+         return tf::EvaluationResult::FAILED_FOR_EVENT;
       }
-      strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order)
+      tf::EvaluationResult OnCreateOrder(tf::Event e, tf::Order& order)
       {
-         if (e.eventType == strategy::EventType::MARKET_CLOSE)
+         if (e.eventType == tf::EventType::MARKET_CLOSE)
          {
             if (current_shares < 0)
             {
@@ -128,33 +128,33 @@ BOOST_AUTO_TEST_CASE( strategy_runner_test )
             order.num_shares = 100;
          }
          previous_event = e;
-         return strategy::EvaluationResult::PASSES_EVALUATION;
+         return tf::EvaluationResult::PASSES_EVALUATION;
       }
-      strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order)
+      tf::EvaluationResult OnOrderSent(tf::Event e, const tf::Order& order)
       {  
-         return strategy::EvaluationResult::PASSES_EVALUATION;
+         return tf::EvaluationResult::PASSES_EVALUATION;
       }
-      strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order)
+      tf::EvaluationResult OnOrderPartiallyFilled(tf::Event e, const tf::Order& order)
       {
          if (order.going_long)
             current_shares += order.num_shares;
          else
             current_shares -= order.num_shares;
-         return strategy::EvaluationResult::PASSES_EVALUATION;
+         return tf::EvaluationResult::PASSES_EVALUATION;
       }
-      strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order)
+      tf::EvaluationResult OnOrderFilled(tf::Event e, const tf::Order& order)
       {
          if (order.going_long)
             current_shares += order.num_shares;
          else
             current_shares -= order.num_shares;         
-         return strategy::EvaluationResult::PASSES_EVALUATION;
+         return tf::EvaluationResult::PASSES_EVALUATION;
       }
-      strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order)
+      tf::EvaluationResult OnOrderCanceled(tf::Event e, const tf::Order& order)
       {
-         return strategy::EvaluationResult::PASSES_EVALUATION;
+         return tf::EvaluationResult::PASSES_EVALUATION;
       }
-      strategy::Event previous_event;
+      tf::Event previous_event;
       long current_shares = 0;
    };
 
@@ -163,11 +163,11 @@ BOOST_AUTO_TEST_CASE( strategy_runner_test )
    runner.AddStrategy( crazyStrategy );
    runner.start();
    // check results
-   BOOST_CHECK_EQUAL(runner.get_result().trades.size(), 43);
-   BOOST_CHECK_EQUAL(runner.get_result().shares_traded_long, 2200);
-   BOOST_CHECK_EQUAL(runner.get_result().shares_traded_short, 2100);
-   BOOST_CHECK_EQUAL(runner.get_result().max_car, 18317.0);
-   BOOST_CHECK_EQUAL(runner.get_result().available_capital, 100000.0 );
+   BOOST_CHECK_EQUAL(runner.get_result().trades.size(), 52);
+   BOOST_CHECK_EQUAL(runner.get_result().shares_traded_long, 2600);
+   BOOST_CHECK_EQUAL(runner.get_result().shares_traded_short, 2600);
+   BOOST_CHECK_EQUAL(runner.get_result().max_car, 18323.0);
+   BOOST_CHECK_EQUAL(runner.get_result().available_capital, 99970.0 );
 
 }
 

@@ -6,7 +6,7 @@
 #include <ib/IBWrapper.h>
 #include <ib/IBConfiguration.hpp>
 #include <market_data/historical/HistoricalService.hpp>
-#include <market_data/Contract.hpp>
+#include <domain/Contract.hpp>
 
 namespace ib
 {

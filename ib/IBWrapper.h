@@ -21,7 +21,7 @@
 #include "ib_client/EReaderOSSignal.h"
 #include "ib_client/CommonDefs.h"
 
-#include <market_data/Contract.hpp>
+#include <domain/Contract.hpp>
 #include <market_data/BarSettings.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 

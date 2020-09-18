@@ -6,7 +6,14 @@
 namespace tf
 {
 
-enum SecurityType { UNKNOWN, STOCK, BOND, FUTURE, OPTION, INDEX };
+enum SecurityType { 
+   SECURITY_TYPE_UNKNOWN, 
+   SECURITY_TYPE_STOCK,
+   SECURITY_TYPE_BOND, 
+   SECURITY_TYPE_FUTURE, 
+   SECURITY_TYPE_OPTION, 
+   SECURITY_TYPE_INDEX 
+};
 
 /**
  * A generic "contract" to hold many types of securities
@@ -18,7 +25,7 @@ class Contract
    Contract(std::string ticker) 
        : ticker(ticker),
          currency("USD"),
-         securityType(SecurityType::STOCK)
+         securityType(SecurityType::SECURITY_TYPE_STOCK)
          {}
    std::string ticker;
    std::string currency;
@@ -33,7 +40,7 @@ class Index : public Contract
    Index() : Contract() {}
    Index(std::string ticker) : Contract(ticker)
    {
-      securityType = SecurityType::INDEX;
+      securityType = SecurityType::SECURITY_TYPE_INDEX;
    }
 };
 

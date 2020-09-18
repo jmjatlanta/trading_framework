@@ -22,12 +22,12 @@ IBAccountService::IBAccountService(const IBConfiguration& config)
       throw IBException("Unable to connect");   
 }
 
-std::vector<risk_management::Order> IBAccountService::GetOpenOrders(uint16_t accountId)
+std::vector<tf::Order> IBAccountService::GetOpenOrders(uint16_t accountId)
 {
-   return std::vector<risk_management::Order>();
+   return std::vector<tf::Order>();
 }
 
-bool IBAccountService::MarketOpen( strategy::Market mkt )
+bool IBAccountService::MarketOpen( tf::Market mkt )
 {
    struct tm* local_time = util::adjust_to_eastern( std::chrono::system_clock::now() );
    // are we on a weekday

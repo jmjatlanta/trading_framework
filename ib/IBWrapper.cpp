@@ -10,7 +10,7 @@
 #include <string>
 #include "IBWrapper.h"
 #include "ib_client/ScannerSubscription.h"
-#include <market_data/Contract.hpp>
+#include <domain/Contract.hpp>
 #include "util/SysLogger.hpp"
 
 namespace ib {
@@ -19,13 +19,13 @@ std::string SecurityTypeToIBString(tf::SecurityType in)
 {
    switch(in)
    {
-      case (tf::SecurityType::STOCK):
+      case (tf::SecurityType::SECURITY_TYPE_STOCK):
          return "STK";
-      case (tf::SecurityType::OPTION):
+      case (tf::SecurityType::SECURITY_TYPE_OPTION):
          return "OPT";
-      case (tf::SecurityType::FUTURE):
+      case (tf::SecurityType::SECURITY_TYPE_FUTURE):
          return "FUT";
-      case (tf::SecurityType::BOND):
+      case (tf::SecurityType::SECURITY_TYPE_BOND):
          return "BOND";
    }
    return "";

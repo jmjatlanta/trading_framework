@@ -7,4 +7,4 @@ include_directories(../vendor
    )
 
 add_executable( SecurityBackfill SecurityBackfill.cpp )
-target_link_libraries(SecurityBackfill ib risk_management market_data)
+target_link_libraries(SecurityBackfill ib domain market_data)

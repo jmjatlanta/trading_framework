@@ -1,4 +1,7 @@
-#Notes specific to Interactive Brokers
+# Notes specific to Interactive Brokers
+
+## Update 18-August-2020
+The TWS front-end is split into 3 major pieces. The order management service (OMS), the historical data service, and the streaming service. Order numbers will be unique, as they must be requested first from the OMS.
 
 ## Singleton vs Multiple
 

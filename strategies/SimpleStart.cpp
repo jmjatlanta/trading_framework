@@ -1,5 +1,5 @@
-#include <risk_management/Strategy.hpp>
-#include <market_data/Contract.hpp>
+#include <domain/Strategy.hpp>
+#include <domain/Contract.hpp>
 #include <backtest/BacktestingConfiguration.hpp>
 #include <backtest/BacktestHistoricalService.hpp>
 #include <backtest/BacktestStrategyRunner.hpp>
@@ -7,32 +7,34 @@
 
 /****
  * This strategy is just to test the system and demonstrate how to write a strategy
+ * Q: Why the templating? A: to make it easy to switch services and do compile-time checks
  */
 template<class HistoricalService>
-class MACross : public strategy::Strategy<HistoricalService>
+class MACross : public tf::Strategy<HistoricalService>
 {
    public:
    MACross(const tf::Contract& contract) : contract(contract)
    {
-      this->SubscribeToEvent( strategy::EventType::LAST, contract );
-      this->SubscribeToEvent( strategy::EventType::MARKET_CLOSE, contract ); // Get out of trades as market is closing
+      // subscribe to necessary events for this strategy to work
+      this->SubscribeToEvent( tf::EventType::LAST, contract );
+      this->SubscribeToEvent( tf::EventType::MARKET_CLOSE, contract ); // Get out of trades as market is closing
    }
    /***
     * This is fired each time the market moves (i.e. a tick happens)
     */
-   strategy::EvaluationResult OnPretradeEvent(strategy::Event e )
+   tf::EvaluationResult OnPretradeEvent(tf::Event e )
    {
       auto sma9 = historicalService.SMA(9, contract);
       auto sma20 = historicalService.SMA(20, contract);
       if ( sma9 && sma20 && !active_order && (sma9.value() > sma20.value() || sma20.value() > sma9.value() ))
-         return strategy::EvaluationResult::PASSES_EVALUATION; 
-      return strategy::EvaluationResult::FAILED_FOR_EVENT;
+         return tf::EvaluationResult::PASSES_EVALUATION; 
+      return tf::EvaluationResult::FAILED_FOR_EVENT;
    }
    /**
     * This is fired if the OEM system wants to place an order on the market
     * TODO: A generic form of the order should be returned
     */
-   strategy::EvaluationResult OnCreateOrder(strategy::Event e, tf::Order& order)
+   tf::EvaluationResult OnCreateOrder(tf::Event e, tf::Order& order)
    {
       // prerequisites passed, build an order
       // pass order to OEM system
@@ -42,26 +44,26 @@ class MACross : public strategy::Strategy<HistoricalService>
     * TODO: A generic form of the order should be sent as a parameter. That
     * way we can track things like amounts
     */
-   strategy::EvaluationResult OnOrderSent(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderSent(tf::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderPartiallyFilled(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderPartiallyFilled(tf::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderFilled(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderFilled(tf::Event e, const tf::Order& order)
    {
 
    }
-   strategy::EvaluationResult OnOrderCanceled(strategy::Event e, const tf::Order& order)
+   tf::EvaluationResult OnOrderCanceled(tf::Event e, const tf::Order& order)
    {
 
    }
    /***
-    * This could get sticky. LIFO or FIFO?
+    * This could get sticky. LIFO or FIFO? Perhaps it is better to have the strategy calculate this
     */
-   strategy::EvaluationResult OnTradeClosed(strategy::Event e)
+   tf::EvaluationResult OnTradeClosed(tf::Event e)
    {
       
    }   

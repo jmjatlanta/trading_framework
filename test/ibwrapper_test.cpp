@@ -9,8 +9,8 @@
 #include <market_data/historical/HistoricalService.hpp>
 #include <market_data/streaming/StreamingService.hpp>
 #include <market_data/BarSettings.hpp>
-#include <market_data/Contract.hpp>
-#include <risk_management/Order.hpp>
+#include <domain/Contract.hpp>
+#include <domain/Order.hpp>
 
 class MockHistoricalService : public market_data::HistoricalService<MockHistoricalService>
 {
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE( book_test )
 BOOST_AUTO_TEST_CASE( account_test )
 {
    ib::IBAccountService acctSvc( IBConfiguration("127.0.0.1", 4007, 1));
-   std::vector<risk_management::Order> orders = acctSvc.GetOpenOrders(1);
+   std::vector<tf::Order> orders = acctSvc.GetOpenOrders(1);
    
 }
 

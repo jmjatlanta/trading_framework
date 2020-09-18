@@ -55,21 +55,21 @@ int BacktestStrategyRunner::start()
       }
    }
    // close the market
-   strategy::Event e;
-   e.eventType = strategy::EventType::MARKET_CLOSE;
-   std::for_each(strategies.begin(), strategies.end(), [&](std::shared_ptr<strategy::Strategy<BacktestHistoricalService>> strategy) {
+   tf::Event e;
+   e.eventType = tf::EventType::MARKET_CLOSE;
+   std::for_each(strategies.begin(), strategies.end(), [&](std::shared_ptr<tf::Strategy<BacktestHistoricalService>> strategy) {
       process_event(strategy, e);
    });
 }
 
-void BacktestStrategyRunner::process_event(std::shared_ptr<strategy::Strategy<BacktestHistoricalService>> strategy, const strategy::Event& e)
+void BacktestStrategyRunner::process_event(std::shared_ptr<tf::Strategy<BacktestHistoricalService>> strategy, const tf::Event& e)
 {
-   strategy::EvaluationResult r = strategy->OnPretradeEvent(e);
-   if (r == strategy::EvaluationResult::PASSES_EVALUATION)
+   tf::EvaluationResult r = strategy->OnPretradeEvent(e);
+   if (r == tf::EvaluationResult::PASSES_EVALUATION)
    {
       tf::Order order;
       r = strategy->OnCreateOrder(e, order);
-      if (r == strategy::EvaluationResult::PASSES_EVALUATION)
+      if (r == tf::EvaluationResult::PASSES_EVALUATION)
       {
          // do we have the capital?
          if (result.available_capital < order.num_shares * order.limit_price)
@@ -89,7 +89,7 @@ void BacktestStrategyRunner::process_event(std::shared_ptr<strategy::Strategy<Ba
             if (used_capital > result.max_car)
                result.max_car = used_capital;
             r = strategy->OnOrderSent(e, order);
-            if (r != strategy::EvaluationResult::PASSES_EVALUATION)
+            if (r != tf::EvaluationResult::PASSES_EVALUATION)
             {
                r = strategy->OnOrderCanceled(e, order);
             }
@@ -123,9 +123,9 @@ void BacktestStrategyRunner::process_event(std::shared_ptr<strategy::Strategy<Ba
 
 void BacktestStrategyRunner::tick_func(const market_data::TickMessage& message)
 {
-   for_each(strategies.begin(), strategies.end(), [&](std::shared_ptr<strategy::Strategy<BacktestHistoricalService>> strategy) {
-         strategy::Event e;
-         e.eventType = strategy::EventType::LAST;
+   for_each(strategies.begin(), strategies.end(), [&](std::shared_ptr<tf::Strategy<BacktestHistoricalService>> strategy) {
+         tf::Event e;
+         e.eventType = tf::EventType::LAST;
          e.price = message.price;
          process_event(strategy, e);
    }); // for_each strategy

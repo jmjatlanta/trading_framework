@@ -2,7 +2,7 @@
 
 Here, I will attempt to document my rationale for certain decisions. As the project is very young (premature?), these of course could change drasticly.
 
-For a more general discussion of the project, [click here](README.md).
+For a more general discussion of the project, [click here](../README.md).
 
 ## Components vs Microservices
 
@@ -59,7 +59,7 @@ src
       -- historical
       -- streaming
    |
-   -- risk_management
+   -- domain
    -- strategy
 ```
 
