@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 project(backtest)
 find_package( Threads )
-include_directories(../vendor
+include_directories(
+    ../vendor
+    ../vendor/rapidjson/include
    ../ )
 
 file(GLOB util_src "../util/*.cpp")

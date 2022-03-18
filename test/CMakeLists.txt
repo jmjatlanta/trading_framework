@@ -8,8 +8,14 @@ project(tests)
 include_directories(../vendor
    ../
    ../vendor/date/include
+   ${RapidJSON_INCLUDE_DIRS}
    ${Boost_INCLUDE_DIRS}
    ${CURL_INCLUDE_DIRS} )
 
-add_executable( tests test_main.cpp ibwrapper_test.cpp strategy_test.cpp backtester_test.cpp ../vendor/date/src/tz.cpp )
+add_executable( tests test_main.cpp 
+    ibwrapper_test.cpp 
+    strategy_test.cpp 
+    backtester_test.cpp
+    util_test.cpp
+    ../vendor/date/src/tz.cpp )
 target_link_libraries(tests ib backtest domain market_data ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${CURL_LIBRARIES} )

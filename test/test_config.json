@@ -1,0 +1,9 @@
+{
+	"InteractiveBrokers": {
+		"Host": "10.0.1.56",
+		"Port": 7496,
+		"HistoricalConnectionId": 10,
+		"StreamingConnectionId": 11,
+		"AccountConnectionId": 12
+	}
+}

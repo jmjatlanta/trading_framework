@@ -11,6 +11,7 @@
 #include <market_data/BarSettings.hpp>
 #include <domain/Contract.hpp>
 #include <domain/Order.hpp>
+#include <util/Configuration.hpp>
 
 class MockHistoricalService : public market_data::HistoricalService<MockHistoricalService>
 {
@@ -58,10 +59,36 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
    auto mock_bars = retVal.get();
    BOOST_TEST( mock_bars.size() == 0 );
 
-   IBHistoricalService svc2( IBConfiguration("127.0.0.1", 4007, 1));
-   auto retVal2 = svc2.GetBars(msft, barSettings);
-   auto bars = retVal2.get();
-   BOOST_TEST( bars.size() > 0);
+   util::Configuration* conf = util::Configuration::GetInstance("test_config.json");
+   {
+       /*
+    IBHistoricalService svc2( IBConfiguration(conf->GetIBHost(), conf->GetIBPort(), conf->GetIBHistoricalConnectionId()));
+    auto retVal2 = svc2.GetBars(msft, barSettings);
+    auto bars = retVal2.get();
+    BOOST_TEST( bars.size() > 0);
+        */
+   }
+
+    {
+        tf::Contract rog("ROG");
+        IBHistoricalService svc2( IBConfiguration(conf->GetIBHost(), 
+                conf->GetIBPort(), conf->GetIBHistoricalConnectionId()));
+        barSettings.barTimeSpan = tf::BarTimeSpan::ONE_DAY;
+        barSettings.duration = std::chrono::hours(2160); // 3 mos
+        auto retVal2 = svc2.GetBars(rog, barSettings);
+        auto bars = retVal2.get();
+        BOOST_TEST( bars.size() > 0);
+        // output to csv
+        for(auto b : bars)
+        {
+            std::cout << b.timestamp << ","
+                    << std::to_string(b.open) << ","
+                    << std::to_string(b.high) << ","
+                    << std::to_string(b.low) << ","
+                    << std::to_string(b.close) << ","
+                    << std::to_string(b.volume) << "\n";
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE( streaming_test )

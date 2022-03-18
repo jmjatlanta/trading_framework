@@ -7,3 +7,9 @@
 [submodule "vendor/pgfe"]
 	path = vendor/pgfe
 	url = https://github.com/dmitigr/pgfe
+[submodule "rapidjson"]
+	path = rapidjson
+	url = https://github.com/Tencent/rapidjson
+[submodule "vendor/rapidjson"]
+	path = vendor/rapidjson
+	url = https://github.com/Tencent/rapidjson
