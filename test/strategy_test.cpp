@@ -149,14 +149,14 @@ BOOST_AUTO_TEST_CASE ( opening_gap )
    backtest::BacktestingConfiguration config;
    backtest::BacktestStrategyRunner strategyRunner(config);
    // run this strategy
-   strategyRunner.AddStrategy( std::make_shared<Scalp1<backtest::BacktestHistoricalService>>(tf::Contract("MSFT")));
+   strategyRunner.AddStrategy( std::make_shared<Scalp1<backtest::BacktestHistoricalService>>(tf::Stock("MSFT")));
 }
 
 BOOST_AUTO_TEST_CASE ( data_capture )
 {
    backtest::BacktestingConfiguration config;
    backtest::BacktestStrategyRunner strategyRunner(config);
-   strategyRunner.AddStrategy( std::make_shared<DataCapture<backtest::BacktestHistoricalService>>(tf::Contract("AAPL")));
+   strategyRunner.AddStrategy( std::make_shared<DataCapture<backtest::BacktestHistoricalService>>(tf::Stock("AAPL")));
    //strategyRunner.AddStrategy(DataCapture(tf::Index("SPX")));
 }
 

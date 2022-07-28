@@ -20,17 +20,18 @@ enum SecurityType {
  */
 class Contract
 {
-   protected:
-   Contract(SecurityType type) : securityType(type) {}
-   Contract(const std::string& ticker, SecurityType type) 
-       : ticker(ticker),
-         securityType(type)
-         {}
-   std::string ticker;
-   std::string currency;
-   std::string exchange;
-   const SecurityType securityType;
-   friend bool operator < (const Contract& lhs, const Contract& rhs );
+    protected:
+    Contract(SecurityType type) : securityType(type) {}
+    Contract(const std::string& ticker, SecurityType type) 
+        : ticker(ticker),
+        securityType(type)
+        {}
+    public:
+    std::string ticker;
+    std::string currency;
+    std::string exchange;
+    const SecurityType securityType;
+    friend bool operator < (const Contract& lhs, const Contract& rhs );
 };
 
 class Index : public Contract

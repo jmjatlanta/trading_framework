@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE( history_test )
 {
    backtest::BacktestHistoricalService hist_svc;
    // create some bars
-   tf::Contract contract("MSFT");
+   tf::Stock contract("MSFT");
    for(int i = 0; i < 100; i++)
    {
       market_data::OHLCBar bar(std::to_string(i), 1, 2, 0.5, 0.75, 3);

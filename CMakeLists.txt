@@ -5,7 +5,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(MyTradingSystem)
 
-add_subdirectory(quandl-cpp)
 add_subdirectory(ib)
 add_subdirectory(backtest)
 add_subdirectory(market_data)

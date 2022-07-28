@@ -31,7 +31,7 @@ class Order
    public:
    long num_shares;
    double limit_price;
-   tf::Contract contract;
+   tf::Contract* contract;
    bool going_long = false;
 };
 

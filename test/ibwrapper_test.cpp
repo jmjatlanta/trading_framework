@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( login )
 BOOST_AUTO_TEST_CASE( generic_historical_ifc )
 {
    // Grab the last 4 days of MSFT bars
-   tf::Contract msft("MSFT");
+   tf::Stock msft("MSFT");
    tf::BarSettings barSettings;
    barSettings.duration = std::chrono::hours(96);
    barSettings.barTimeSpan = tf::BarTimeSpan::FIVE_MINUTES;
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
    }
 
     {
-        tf::Contract rog("ROG");
+        tf::Stock rog("ROG");
         IBHistoricalService svc2( IBConfiguration(conf->GetIBHost(), 
                 conf->GetIBPort(), conf->GetIBHistoricalConnectionId()));
         barSettings.barTimeSpan = tf::BarTimeSpan::ONE_DAY;
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
 
 BOOST_AUTO_TEST_CASE( streaming_test )
 {
-   tf::Contract msft("MSFT");
+   tf::Stock msft("MSFT");
 
    bool atLeastOne = false;
    auto func = [&atLeastOne](market_data::TickMessage tm) {
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE( book_test )
    /**
     * Note: This requires subscription to L2
     */
-   tf::Contract codx("T");
+   tf::Stock codx("T");
    codx.exchange = "ARCA";
    bool atLeastOne = false;
 

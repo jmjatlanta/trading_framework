@@ -45,12 +45,12 @@ void IBStreamingService::GetTimeAndSales(tf::Contract contract, std::function<vo
 
 void IBStreamingService::GetBookData(tf::Contract contract, std::function<void(market_data::BookMessage)> func)
 {
-   // convert market data message to generic
-   auto conv_func = [&func](const ib::BookMessage& ib_msg) {
-      func(market_data::BookMessage());
-   };
+    // convert IB market data message to its generic equivalent
+    auto conv_func = [&func](const ib::BookMessage& ib_msg) {
+      func( as<market_data::BookMessage>(ib_msg));
+    };
 
-   ibWrapper->SubscribeToBookData(ContractToIBContract(contract), conv_func);
+    ibWrapper->SubscribeToBookData(ContractToIBContract(contract), conv_func);
 }
 
 } // namespace ib

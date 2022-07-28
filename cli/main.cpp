@@ -1,4 +1,3 @@
-#include <quandl/quandl.h>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -56,6 +55,7 @@ int main(int argc, char** argv)
 {
    if (argc < 2) syntax(argv[0]);
 
+    /* This used to use quandl, but has been removed. This should move to a module
    std::string exchange = argv[1];
    std::string symbol_file = get_symbol_file(exchange);
    if (exchange != "NASDAQ" && exchange != "NYSE") syntax(argv[0]);
@@ -66,8 +66,8 @@ int main(int argc, char** argv)
    if (symbol_file.empty())
       syntax(argv[0]);
 
-   leind::quandl::core q(".csv");
-   q.auth("vbxgzKWu_NgtPHUj1V-C");
+   //leind::quandl::core q(".csv");
+   //q.auth("vbxgzKWu_NgtPHUj1V-C");
 
    std::stringstream symbol_stream(symbol_file);
    std::string symbol_line;
@@ -102,6 +102,6 @@ int main(int argc, char** argv)
          }
       }
    }
-
+    */
    return 0;
 }

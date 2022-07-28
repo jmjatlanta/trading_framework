@@ -24,7 +24,8 @@ class TickMessage
 class BookMessage
 {
    public:
-   tf::Contract contract;
+   BookMessage() {}
+   tf::Contract* contract;
    int position;
    int operation;
    int side;

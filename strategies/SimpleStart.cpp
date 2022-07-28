@@ -83,8 +83,7 @@ int main(int argc, char** argv)
    backtest::BacktestingConfiguration config;
    config.fileName = "STOCK/IB/1MIN/GNUS.csv";
    backtest::BacktestStrategyRunner runner( config );
-   tf::Contract contract;
-   contract.ticker = "GNUS";
+   tf::Stock contract("GNUS");
    contract.exchange = "NASDAQ";
    contract.currency = "USD";
    auto strategy = std::make_shared<MACross<backtest::BacktestHistoricalService>>(contract);

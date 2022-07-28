@@ -66,8 +66,16 @@ class TickMessage
 
 class BookMessage
 {
-   public:
+    public:
+    market_data::BookMessage to(market_data::BookMessage& result) const
+    { 
+        // TODO: fill in the object
+        return result;
+    }
 };
+
+template<class T>
+T as(const BookMessage& in) { T t; return in.to(t);}
 
 class IBWrapper: public EWrapper {
 public:

@@ -97,7 +97,7 @@ int main(int argc, char** argv)
    }
    std::string ticker = argv[1];
    std::string barSize = argv[2];
-   tf::Contract contract(ticker);
+   tf::Stock contract(ticker);
    contract.exchange = "SMART";
    if (barSize == "T") // we want ticks
    {
