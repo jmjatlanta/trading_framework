@@ -20,28 +20,31 @@ enum SecurityType {
  */
 class Contract
 {
-   public:
-   Contract(){}
-   Contract(std::string ticker) 
+   protected:
+   Contract(SecurityType type) : securityType(type) {}
+   Contract(const std::string& ticker, SecurityType type) 
        : ticker(ticker),
-         currency("USD"),
-         securityType(SecurityType::SECURITY_TYPE_STOCK)
+         securityType(type)
          {}
    std::string ticker;
    std::string currency;
    std::string exchange;
-   SecurityType securityType;
+   const SecurityType securityType;
    friend bool operator < (const Contract& lhs, const Contract& rhs );
 };
 
 class Index : public Contract
 {
    public:
-   Index() : Contract() {}
-   Index(std::string ticker) : Contract(ticker)
-   {
-      securityType = SecurityType::SECURITY_TYPE_INDEX;
-   }
+   Index() : Contract(SecurityType::SECURITY_TYPE_INDEX) {}
+   Index(const std::string& ticker) : Contract(ticker, SecurityType::SECURITY_TYPE_INDEX) {}
+};
+
+class Stock : public Contract
+{
+    public:
+    Stock() : Contract(SecurityType::SECURITY_TYPE_STOCK) {}
+    Stock(const std::string& ticker) : Contract(ticker, SecurityType::SECURITY_TYPE_STOCK) {}
 };
 
 } // namespace tf

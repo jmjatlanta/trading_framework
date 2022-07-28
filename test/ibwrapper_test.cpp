@@ -81,12 +81,7 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
         // output to csv
         for(auto b : bars)
         {
-            std::cout << b.timestamp << ","
-                    << std::to_string(b.open) << ","
-                    << std::to_string(b.high) << ","
-                    << std::to_string(b.low) << ","
-                    << std::to_string(b.close) << ","
-                    << std::to_string(b.volume) << "\n";
+            std::cout << b.toCSV() << "\n";
         }
     }
 }

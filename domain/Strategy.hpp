@@ -25,16 +25,61 @@ class Strategy
 
    public:
    Strategy() {}
+   /*****
+    * @brief fired when an event happens
+    * @param e the event
+    * @returns the result
+    */
    virtual tf::EvaluationResult OnPretradeEvent(tf::Event e ) = 0;
+   /****
+    * @brief fired when an order is created
+    * @param e the event
+    * @param order the order
+    * @return the result
+    */
    virtual tf::EvaluationResult OnCreateOrder(tf::Event e, tf::Order& order) = 0;
+   /****
+    * @brief fired when an order is sent to the broker
+    * @param e the event
+    * @param order the order
+    * @param the result
+    */
    virtual tf::EvaluationResult OnOrderSent(tf::Event e, const tf::Order& order) = 0;
+   /*****
+    * @brief fired when the order is partially filled
+    * @param e the event
+    * @param order the order
+    * @return the result
+    */
    virtual tf::EvaluationResult OnOrderPartiallyFilled(tf::Event e, const tf::Order& order) = 0;
+   /*****
+    * @brief fired with the order is filled completely
+    * @param e the event
+    * @param order the order
+    * @return the result
+    */
    virtual tf::EvaluationResult OnOrderFilled(tf::Event e, const tf::Order& order) = 0;
+   /****
+    * @brief fired when the order has been canceled
+    * @param e the event
+    * @param order the order
+    * @return the result
+    */
    virtual tf::EvaluationResult OnOrderCanceled(tf::Event e, const tf::Order& order) = 0;
+
+   /****
+    * @brief called to make this object subscribe to an event
+    * @param eventType the event type
+    * @param contract the security to listen for
+    */
    void SubscribeToEvent(tf::EventType eventType, tf::Contract contract)
    {
       eventContractPairs.push_back( { eventType, contract} );
    }
+
+   /***
+    * The collection of events and contracts that are being listened to
+    */
    std::vector<std::pair<EventType, tf::Contract>> eventContractPairs;
    HistoricalService historicalService;
 };
