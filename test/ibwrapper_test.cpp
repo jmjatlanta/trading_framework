@@ -1,5 +1,4 @@
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include <iostream>
 #include <ib/IBWrapper.h>
@@ -32,21 +31,20 @@ class MockHistoricalService : public market_data::HistoricalService<MockHistoric
    }
 };
 
-BOOST_AUTO_TEST_SUITE ( ib )
-
-BOOST_AUTO_TEST_CASE( login )
+TEST(ibwrapper_test, login )
 {
    try
    {
-      IBWrapper ibw("localhost", 4001, 1);
+      ib::IBWrapper ibw("localhost", 4001, 1);
    }
    catch(...)
    {
-      BOOST_FAIL("ib/login: immediate creation and deletion threw exception");
+      std::cerr << "ib/login: immediate creation and deletion threw exception\n";
+      FAIL();
    }
 }
 
-BOOST_AUTO_TEST_CASE( generic_historical_ifc )
+TEST(ibwrapper_test, generic_historical_ifc )
 {
    // Grab the last 4 days of MSFT bars
    tf::Stock msft("MSFT");
@@ -57,7 +55,7 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
    MockHistoricalService svc;
    auto retVal = svc.GetBars(msft, barSettings);
    auto mock_bars = retVal.get();
-   BOOST_TEST( mock_bars.size() == 0 );
+   EXPECT_EQ( mock_bars.size(), 0 );
 
    util::Configuration* conf = util::Configuration::GetInstance("test_config.json");
    {
@@ -71,13 +69,13 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
 
     {
         tf::Stock rog("ROG");
-        IBHistoricalService svc2( IBConfiguration(conf->GetIBHost(), 
+        ib::IBHistoricalService svc2( IBConfiguration(conf->GetIBHost(), 
                 conf->GetIBPort(), conf->GetIBHistoricalConnectionId()));
         barSettings.barTimeSpan = tf::BarTimeSpan::ONE_DAY;
         barSettings.duration = std::chrono::hours(2160); // 3 mos
         auto retVal2 = svc2.GetBars(rog, barSettings);
         auto bars = retVal2.get();
-        BOOST_TEST( bars.size() > 0);
+        EXPECT_GT( bars.size(), 0);
         // output to csv
         for(auto b : bars)
         {
@@ -86,7 +84,7 @@ BOOST_AUTO_TEST_CASE( generic_historical_ifc )
     }
 }
 
-BOOST_AUTO_TEST_CASE( streaming_test )
+TEST(ibwrapper_test, streaming_test )
 {
    tf::Stock msft("MSFT");
 
@@ -113,13 +111,13 @@ BOOST_AUTO_TEST_CASE( streaming_test )
       atLeastOne = true;
    };
 
-   IBStreamingService ib(IBConfiguration("127.0.0.1", 4007, 1));
+   ib::IBStreamingService ib(IBConfiguration("127.0.0.1", 4007, 1));
    ib.GetTimeAndSales(msft, func );
    std::this_thread::sleep_for( std::chrono::seconds(3) );
-   BOOST_TEST( atLeastOne == true );
+   EXPECT_TRUE( atLeastOne );
 }
 
-BOOST_AUTO_TEST_CASE( book_test )
+TEST(ibwrapper_test, book_test )
 {
    /**
     * Note: This requires subscription to L2
@@ -132,17 +130,15 @@ BOOST_AUTO_TEST_CASE( book_test )
       atLeastOne = true;
    };
 
-   IBStreamingService ib( IBConfiguration("127.0.0.1", 4007, 1));
+   ib::IBStreamingService ib( IBConfiguration("127.0.0.1", 4007, 1));
    ib.GetBookData(codx, func);
    std::this_thread::sleep_for( std::chrono::seconds(3) );
-   BOOST_TEST( atLeastOne == true );
+   EXPECT_TRUE( atLeastOne );
 }
 
-BOOST_AUTO_TEST_CASE( account_test )
+TEST(ibwrapper_test, account_test )
 {
    ib::IBAccountService acctSvc( IBConfiguration("127.0.0.1", 4007, 1));
    std::vector<tf::Order> orders = acctSvc.GetOpenOrders(1);
    
 }
-
-BOOST_AUTO_TEST_SUITE_END()

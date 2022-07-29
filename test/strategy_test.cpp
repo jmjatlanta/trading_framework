@@ -1,5 +1,4 @@
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include <ib/IBWrapper.h>
 #include <ib/IBHistoricalService.hpp>
@@ -141,9 +140,7 @@ class DataCapture : public tf::Strategy<HistoricalService>
    std::ofstream file;
 };
 
-BOOST_AUTO_TEST_SUITE ( strategy )
-
-BOOST_AUTO_TEST_CASE ( opening_gap )
+TEST(strategy_test, opening_gap )
 {
    // this is the "main" system
    backtest::BacktestingConfiguration config;
@@ -152,12 +149,10 @@ BOOST_AUTO_TEST_CASE ( opening_gap )
    strategyRunner.AddStrategy( std::make_shared<Scalp1<backtest::BacktestHistoricalService>>(tf::Stock("MSFT")));
 }
 
-BOOST_AUTO_TEST_CASE ( data_capture )
+TEST(strategy_test, data_capture )
 {
    backtest::BacktestingConfiguration config;
    backtest::BacktestStrategyRunner strategyRunner(config);
    strategyRunner.AddStrategy( std::make_shared<DataCapture<backtest::BacktestHistoricalService>>(tf::Stock("AAPL")));
    //strategyRunner.AddStrategy(DataCapture(tf::Index("SPX")));
 }
-
-BOOST_AUTO_TEST_SUITE_END()

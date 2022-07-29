@@ -1,5 +1,4 @@
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 #include <chrono>
 #include <iomanip>
@@ -24,22 +23,20 @@ std::chrono::system_clock::time_point convert_string_to_time_point( std::string 
    return tp;
 }
 
-BOOST_AUTO_TEST_SUITE( backtester_test )
-
-BOOST_AUTO_TEST_CASE( accounting_test )
+TEST(backtester_test, accounting_test )
 {
    backtest::BacktestAccountingService acct_svc;
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 24 2020 13:00:00" )); // a Sunday, 9AM Eastern
-   BOOST_CHECK( !acct_svc.MarketOpen( tf::Market::NASDAQ ) );
+   EXPECT_FALSE( acct_svc.MarketOpen( tf::Market::NASDAQ ) );
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 25 2020 13:00:00" )); // a Monday pre-market
-   BOOST_CHECK( !acct_svc.MarketOpen( tf::Market::NASDAQ ) );
+   EXPECT_FALSE( acct_svc.MarketOpen( tf::Market::NASDAQ ) );
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 25 2020 13:30:00" )); // a Monday at market open
-   BOOST_CHECK( acct_svc.MarketOpen( tf::Market::NASDAQ ) );
+   EXPECT_TRUE( acct_svc.MarketOpen( tf::Market::NASDAQ ) );
    acct_svc.AdvanceTime( convert_string_to_time_point( "May 25 2020 20:00:01" )); // a Monday at market close
-   BOOST_CHECK( !acct_svc.MarketOpen( tf::Market::NASDAQ ) );
+   EXPECT_FALSE( acct_svc.MarketOpen( tf::Market::NASDAQ ) );
 }
 
-BOOST_AUTO_TEST_CASE( history_test )
+TEST(backtester_test, history_test )
 {
    backtest::BacktestHistoricalService hist_svc;
    // create some bars
@@ -49,11 +46,11 @@ BOOST_AUTO_TEST_CASE( history_test )
       market_data::OHLCBar bar(std::to_string(i), 1, 2, 0.5, 0.75, 3);
       hist_svc.AddBar(contract, bar);
    }
-   BOOST_CHECK_EQUAL(2.0, hist_svc.HighOfDay(std::chrono::system_clock::now(), contract).value() );
-   BOOST_CHECK_EQUAL(0.5, hist_svc.LowOfDay(std::chrono::system_clock::now(), contract).value() );
+   EXPECT_EQ(2.0, hist_svc.HighOfDay(std::chrono::system_clock::now(), contract).value() );
+   EXPECT_EQ(0.5, hist_svc.LowOfDay(std::chrono::system_clock::now(), contract).value() );
 }
 
-BOOST_AUTO_TEST_CASE( strategy_runner_test )
+TEST(backtester_test, strategy_runner_test )
 {
 
    // set up logging
@@ -163,12 +160,10 @@ BOOST_AUTO_TEST_CASE( strategy_runner_test )
    runner.AddStrategy( crazyStrategy );
    runner.start();
    // check results
-   BOOST_CHECK_EQUAL(runner.get_result().trades.size(), 52);
-   BOOST_CHECK_EQUAL(runner.get_result().shares_traded_long, 2600);
-   BOOST_CHECK_EQUAL(runner.get_result().shares_traded_short, 2600);
-   BOOST_CHECK_EQUAL(runner.get_result().max_car, 18323.0);
-   BOOST_CHECK_EQUAL(runner.get_result().available_capital, 99970.0 );
+   EXPECT_EQ(runner.get_result().trades.size(), 52);
+   EXPECT_EQ(runner.get_result().shares_traded_long, 2600);
+   EXPECT_EQ(runner.get_result().shares_traded_short, 2600);
+   EXPECT_EQ(runner.get_result().max_car, 18323.0);
+   EXPECT_EQ(runner.get_result().available_capital, 99970.0 );
 
 }
-
-BOOST_AUTO_TEST_SUITE_END()
